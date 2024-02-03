@@ -10,7 +10,7 @@ app.get('/api/refresh-status', (req, res) => {
   serverRestarted = false;
 });
 
-app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname, 'docs')));
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
