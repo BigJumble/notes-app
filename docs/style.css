@@ -34,7 +34,8 @@ p, h1, h2, h3, h4, h5, h6, span, a, li, td, th, .text{
 {
     text-align: center;
     margin: 0 auto;
-    width: 120px;
+    width: 140px;
+    padding: 3px;
     border-radius: 10px;
     border: 2px solid rgb(78, 0, 0);
     user-select: none;

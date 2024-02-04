@@ -150,14 +150,13 @@ function themeUpdate()
 {
 	const rgbBc = hexToRgba(myColors.bc);
 	const rgbFc = hexToRgba(myColors.fc);
-	// console.log(myColors)
 
 	themeColor.content = myColors.bc;
 	theme2Color.content = myColors.bc;
 
 	styleSheet.cssRules[0].style.color = myColors.tc;
 
-	styleSheet.cssRules[2].style.backgroundColor = `rgb(${rgbBc.r},${rgbBc.g},${rgbBc.b},1)`;
+	styleSheet.cssRules[2].style.backgroundColor = `rgb(${rgbBc.r},${rgbBc.g},${rgbBc.b},0.3)`;
 	styleSheet.cssRules[2].style.borderColor = myColors.fc;
 	styleSheet.cssRules[2].style.boxShadow = `0px 0px 20px -5px ${myColors.fc}`;
 
@@ -264,6 +263,7 @@ function makeNote()
 
 }
 let forceSettingOpen = false;
+let lastOpen = null;
 function _noteGeneration(id, { posX, posY, sizeX, sizeY, text, colors = null })
 {
 
@@ -281,9 +281,15 @@ function _noteGeneration(id, { posX, posY, sizeX, sizeY, text, colors = null })
 
 	newDiv.addEventListener("mouseenter", (e) =>
 	{
+		if(lastOpen!== e.target)
+		{
+			Coloris.close();
+			lastOpen = e.target;
+		}
+
 		// console.log(e.target)
-		if(forceSettingOpen) return;
-		if(updating) return;
+		if (forceSettingOpen) return;
+		if (updatingCol2) return;
 		if (isDragging) return;
 		e.target.style.zIndex = 101;
 		e.target.appendChild(settings);
