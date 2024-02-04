@@ -288,7 +288,7 @@ function _noteGeneration(id, { posX, posY, sizeX, sizeY, text, colors = null })
 		e.target.style.zIndex = 101;
 		e.target.appendChild(settings);
 		settings.style.display = "grid";
-		settings.style.transform = `translate(${-4}px, ${(-((Number)(e.target.dataset.sizeY)+2) * tileSize-8)}px)`;
+		settings.style.transform = `translate(${-4}px, ${(-((Number)(e.target.dataset.sizeY)+2) * tileSize-6)}px)`;
 		settings.dataset.currentId = e.target.id;
 
 		e.target.appendChild(settings2);
