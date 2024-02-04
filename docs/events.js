@@ -9,6 +9,13 @@ canvas.addEventListener('mousedown', startDrag);
 document.addEventListener('mousemove', mousePosition);
 canvas.addEventListener('wheel', handleScroll);
 
+Coloris( {
+    theme: 'default',
+    themeMode: 'dark',
+    alpha: true,
+    forceAlpha: true,
+  });
+
 colorPicker.addEventListener('input', update);
 colorPicker2.addEventListener('input', update);
 colorPicker3.addEventListener('input', update);

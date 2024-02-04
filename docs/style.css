@@ -74,16 +74,27 @@ p, h1, h2, h3, h4, h5, h6, span, a, li, td, th, .text{
 
     cursor: pointer;
 }
-.c2{
-    display: none;
+.clr-field{
+
     align-self: center;
     justify-self: center;
 }
-.c1 {
+.c3 {
     color: white;
 }
 
 /* ===== Unordered from here ===== */
+.col{
+    background-color: black;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}
 #settingHitbox{
     position: absolute;
     width: 270px;

@@ -5,7 +5,7 @@ let colorPicker = document.getElementById('colorPicker');
 let colorPicker2 = document.getElementById('colorPicker2');
 let colorPicker3 = document.getElementById('colorPicker3');
 
-const styleSheet = document.styleSheets[0];
+const styleSheet = document.styleSheets[1];
 
 let menu = document.getElementById("menu");
 let settings = document.getElementById("settings");
@@ -19,7 +19,7 @@ let cameraState = { x: 0.0, y: 0.0, zoom: 1.0 };
 
 
 let myColors = { fc: colorPicker.value, bc: colorPicker2.value, tc: colorPicker3.value };
-let myColorsFloat = { fc: rgbToFloat(hexToRgb(myColors.fc)), bc: rgbToFloat(hexToRgb(myColors.bc)), tc: rgbToFloat(hexToRgb(myColors.tc)) };
+let myColorsFloat = { fc: rgbaToFloat(hexToRgba(myColors.fc)), bc: rgbaToFloat(hexToRgba(myColors.bc)), tc: rgbaToFloat(hexToRgba(myColors.tc)) };
 let expectedColors;
 
 let myColors2 = { ...myColors };
@@ -39,14 +39,15 @@ function update()
 {
 	expectedColors = { fc: colorPicker.value, bc: colorPicker2.value, tc: colorPicker3.value };
 	expectedColors2 = { fc: colorPicker4.value, bc: colorPicker5.value, tc: colorPicker6.value };
-
-	if (!(myColors2.bc === expectedColors2.bc &&
-		myColors2.fc === expectedColors2.fc &&
-		myColors2.tc === expectedColors2.tc)) {
+	// console.log(expectedColors)
+	if (!(myColors2.bc.includes( expectedColors2.bc) &&
+		myColors2.fc.includes( expectedColors2.fc) &&
+		myColors2.tc.includes( expectedColors2.tc))) {
 		updatingCol2 = true;
 	}
 
-	// console.log(expectedColors2)
+	// console.log(colorPicker.value)
+	// colorPicker.value = "#ffffffff"
 	if (updating) return;
 
 	updating = true;
@@ -59,18 +60,18 @@ function _smoothUpdate(timestamp)
 {
 
 	const deltaTime = timestamp - lastTimestamp;
-
+	// console.log(myColors,expectedColors)
 	//check if update finished
 	if (
 		cameraState.x === expectedCameraState.x &&
 		cameraState.y === expectedCameraState.y &&
 		cameraState.zoom === expectedCameraState.zoom &&
-		myColors.bc === expectedColors.bc &&
-		myColors.fc === expectedColors.fc &&
-		myColors.tc === expectedColors.tc &&
-		myColors2.bc === expectedColors2.bc &&
-		myColors2.fc === expectedColors2.fc &&
-		myColors2.tc === expectedColors2.tc
+		myColors.bc.includes( expectedColors.bc) &&
+		myColors.fc.includes( expectedColors.fc) &&
+		myColors.tc.includes( expectedColors.tc) &&
+		myColors2.bc.includes( expectedColors2.bc) &&
+		myColors2.fc.includes( expectedColors2.fc) &&
+		myColors2.tc.includes( expectedColors2.tc)
 	) {
 		localStorage.setItem("colors", JSON.stringify(expectedColors));
 		localStorage.setItem("camera", JSON.stringify(cameraState));
@@ -106,13 +107,13 @@ function _smoothUpdate(timestamp)
 	cameraState.x = lerp(cameraState.x, expectedCameraState.x, lerpFactor);
 	cameraState.y = lerp(cameraState.y, expectedCameraState.y, lerpFactor);
 
-	myColors.fc = lerpColor(myColorsFloat.fc, expectedColors.fc, lerpFactor * 0.3, "fc");
-	myColors.bc = lerpColor(myColorsFloat.bc, expectedColors.bc, lerpFactor * 0.3, "bc");
-	myColors.tc = lerpColor(myColorsFloat.tc, expectedColors.tc, lerpFactor * 0.3, "tc");
+	myColors.fc = lerpColor(myColorsFloat.fc, rgbaToFloat(hexToRgba(expectedColors.fc)), lerpFactor * 0.3, "fc");
+	myColors.bc = lerpColor(myColorsFloat.bc, rgbaToFloat(hexToRgba(expectedColors.bc)), lerpFactor * 0.3, "bc");
+	myColors.tc = lerpColor(myColorsFloat.tc, rgbaToFloat(hexToRgba(expectedColors.tc)), lerpFactor * 0.3, "tc");
 
-	myColors2.fc = lerpColor(myColorsFloat2.fc, expectedColors2.fc, lerpFactor * 0.4, "fc", 2);
-	myColors2.bc = lerpColor(myColorsFloat2.bc, expectedColors2.bc, lerpFactor * 0.4, "bc", 2);
-	myColors2.tc = lerpColor(myColorsFloat2.tc, expectedColors2.tc, lerpFactor * 0.4, "tc", 2);
+	myColors2.fc = lerpColor(myColorsFloat2.fc, rgbaToFloat(hexToRgba(expectedColors2.fc)), lerpFactor * 0.4, "fc", 2);
+	myColors2.bc = lerpColor(myColorsFloat2.bc, rgbaToFloat(hexToRgba(expectedColors2.bc)), lerpFactor * 0.4, "bc", 2);
+	myColors2.tc = lerpColor(myColorsFloat2.tc, rgbaToFloat(hexToRgba(expectedColors2.tc)), lerpFactor * 0.4, "tc", 2);
 
 	if (Math.abs(cameraState.x - expectedCameraState.x) < 2) cameraState.x = expectedCameraState.x;
 	if (Math.abs(cameraState.y - expectedCameraState.y) < 2) cameraState.y = expectedCameraState.y;
@@ -134,44 +135,78 @@ function lerp(start, end, t)
 	return start * (1 - t) + end * t;
 }
 
-function hexToRgb(hex)
-{
-	hex = hex.replace(/^#/, '');
+function hexToRgba(hex) {
+    hex = hex.replace(/^#/, '');
 
-	const bigint = parseInt(hex, 16);
-	const r = (bigint >> 16) & 255;
-	const g = (bigint >> 8) & 255;
-	const b = bigint & 255;
+    let bigint = parseInt(hex, 16);
+    if (hex.length === 8) {
+		let r = (bigint >> 24) & 255;
+		let g = (bigint >> 16) & 255;
+		let b = (bigint >> 8) & 255;
+		let a = (bigint & 255) / 255;
+		return { r, g, b, a };
+    }
+	else
+	{
+		let r = (bigint >> 16) & 255;
+		let g = (bigint >> 8) & 255;
+		let b = bigint & 255;
+		let a = 1;
+		return { r, g, b, a };
+	}
 
-	return { r, g, b };
+    
+}
+function rgbaToFloat(rgba) {
+    return { r: rgba.r / 255, g: rgba.g / 255, b: rgba.b / 255, a: rgba.a };
 }
 
-function rgbToFloat(rgb)
-{
-	return { r: rgb.r / 255, g: rgb.g / 255, b: rgb.b / 255 };
+function lerpColor(color1, color2, t, a, first = 1) {
+    const float1 = color1;
+    const float2 = color2;
+
+    const lerped = {
+        r: float1.r + t * (float2.r - float1.r),
+        g: float1.g + t * (float2.g - float1.g),
+        b: float1.b + t * (float2.b - float1.b),
+        a: float1.a + t * (float2.a - float1.a),
+    };
+
+    const lerpedRgb = {
+        r: Math.round(lerped.r * 255),
+        g: Math.round(lerped.g * 255),
+        b: Math.round(lerped.b * 255),
+        a: lerped.a,
+    };
+
+    if (first === 1)
+        myColorsFloat[a] = lerped;
+    if (first === 2)
+        myColorsFloat2[a] = lerped;
+
+    const lerpedHex = rgbaToHex(lerpedRgb);// `rgba(${lerpedRgb.r}, ${lerpedRgb.g}, ${lerpedRgb.b}, ${lerpedRgb.a})`;
+
+    return lerpedHex;
 }
-function lerpColor(color1, color2, t, a, first = 1)
-{
-	const float1 = color1;
-	const float2 = rgbToFloat(hexToRgb(color2));
 
-	const lerped = {
-		r: float1.r + t * (float2.r - float1.r),
-		g: float1.g + t * (float2.g - float1.g),
-		b: float1.b + t * (float2.b - float1.b),
-	};
+function rgbaToHex(rgba) {
+    // Ensure the rgba values are within the valid range (0-255)
+    const clamp = (value) => Math.round(Math.min(255, Math.max(0, value)));
 
-	const lerpedRgb = {
-		r: Math.round(lerped.r * 255),
-		g: Math.round(lerped.g * 255),
-		b: Math.round(lerped.b * 255),
-	};
-	if (first === 1)
-		myColorsFloat[a] = lerped;
-	if (first === 2)
-		myColorsFloat2[a] = lerped;
+    // Extract the individual RGBA components
+    const r = clamp(rgba.r);
+    const g = clamp(rgba.g);
+    const b = clamp(rgba.b);
+    const a = Math.round(rgba.a * 255); // Alpha channel needs to be in the range 0-255
 
-	const lerpedHex = `#${(1 << 24 | lerpedRgb.r << 16 | lerpedRgb.g << 8 | lerpedRgb.b).toString(16).slice(1)}`;
+    // Convert each component to its hex representation
+    const componentToHex = (c) => {
+        const hex = c.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    };
 
-	return lerpedHex;
+    // Combine components into the hex color string
+    const hex = `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}${componentToHex(a)}`;
+
+    return hex;
 }

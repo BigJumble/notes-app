@@ -12,7 +12,7 @@ function setCanvasSize()
 function drawGrid()
 {
 	const cellSize = cameraState.zoom * tileSize;
-
+	// console.log(myColors)
 	ctx.fillStyle = myColors.bc;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = myColors.fc;
@@ -103,7 +103,7 @@ function LoadElements()
 		colorPicker5.value = cols.bc;
 		colorPicker6.value = cols.tc;
 		myColors = cols;
-		myColorsFloat = { fc: rgbToFloat(hexToRgb(myColors.fc)), bc: rgbToFloat(hexToRgb(myColors.bc)), tc: rgbToFloat(hexToRgb(myColors.tc)) };
+		myColorsFloat = { fc: rgbaToFloat(hexToRgba(myColors.fc)), bc: rgbaToFloat(hexToRgba(myColors.bc)), tc: rgbaToFloat(hexToRgba(myColors.tc)) };
 		myColors2 = {...myColors};
 		myColorsFloat2  = {...myColorsFloat};
 		colorPallet = {...myColors};
@@ -148,15 +148,16 @@ function RedrawElements()
 }
 function themeUpdate()
 {
-	const rgbBc = hexToRgb(myColors.bc);
-	const rgbFc = hexToRgb(myColors.fc);
+	const rgbBc = hexToRgba(myColors.bc);
+	const rgbFc = hexToRgba(myColors.fc);
+	// console.log(myColors)
 
 	themeColor.content = myColors.bc;
 	theme2Color.content = myColors.bc;
 
 	styleSheet.cssRules[0].style.color = myColors.tc;
 
-	styleSheet.cssRules[2].style.backgroundColor = `rgb(${rgbBc.r},${rgbBc.g},${rgbBc.b},0.4)`;
+	styleSheet.cssRules[2].style.backgroundColor = `rgb(${rgbBc.r},${rgbBc.g},${rgbBc.b},1)`;
 	styleSheet.cssRules[2].style.borderColor = myColors.fc;
 	styleSheet.cssRules[2].style.boxShadow = `0px 0px 20px -5px ${myColors.fc}`;
 
@@ -225,7 +226,11 @@ function popMenu(e)
 
 	if (e.which === 3) {
 		if (e.target === menu) return;
-
+		let toHide = settings.getElementsByClassName("clr-field");
+		for(let i =0;i<toHide.length;i++)
+		{
+			toHide[i].style.display = "block"
+		}
 		menu.style.display = "grid";
 		menu.style.left = `${e.clientX}px`;
 		menu.style.top = `${e.clientY}px`;
@@ -291,7 +296,13 @@ function _noteGeneration(id, { posX, posY, sizeX, sizeY, text, colors = null })
 		settings2.style.transform = `translate(${(((Number)(e.target.dataset.sizeX)) * tileSize)+6}px, ${2}px)`;
 		settings2.dataset.currentId = e.target.id;
 
-		styleSheet.cssRules[7].style.display = "none";
+		// styleSheet.cssRules[7].style.display = "none";
+
+		let toHide = settings.getElementsByClassName("clr-field");
+		for(let i =0;i<toHide.length;i++)
+		{
+			toHide[i].style.display = "none"
+		}
 
 		let el = document.getElementsByClassName("c1");
 		for (let i = 0; i < el.length; i++) {
@@ -302,7 +313,7 @@ function _noteGeneration(id, { posX, posY, sizeX, sizeY, text, colors = null })
 		{
 			const colors = JSON.parse(e.target.dataset.colors);
 			myColors2 = { ...colors };
-			myColorsFloat2 = { fc: rgbToFloat(hexToRgb(myColors2.fc)), bc: rgbToFloat(hexToRgb(myColors2.bc)), tc: rgbToFloat(hexToRgb(myColors2.tc)) };
+			myColorsFloat2 = { fc: rgbaToFloat(hexToRgba(myColors2.fc)), bc: rgbaToFloat(hexToRgba(myColors2.bc)), tc: rgbaToFloat(hexToRgba(myColors2.tc)) };
 			expectedColors2 = {...myColors2};
 
 			colorPicker4.value = colors.fc;
@@ -501,7 +512,14 @@ function changeSizeElement(e)
 
 function colorElement(){
 
-	styleSheet.cssRules[7].style.display = "block";
+	let toHide = settings.getElementsByClassName("clr-field");
+	for(let i =0;i<toHide.length;i++)
+	{
+		toHide[i].style.display = "block"
+		toHide[i].style.color = myColors2[Object.keys(myColors2)[i]];
+
+	}
+
 	let el = document.getElementsByClassName("c1");
 	for (let i = 0; i < el.length; i++) {
 		el[i].style.display = "none";
