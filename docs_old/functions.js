@@ -79,7 +79,7 @@ function startDrag(e)
 		document.removeEventListener('mousemove', dragMove);
 		document.removeEventListener('mouseup', endDrag);
 	}
-
+	
 	document.addEventListener('mousemove', dragMove);
 	document.addEventListener('mouseup', endDrag);
 }

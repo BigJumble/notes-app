@@ -2,6 +2,7 @@ function checkRefreshStatus() {
     fetch('/api/refresh-status')
         .then(response => response.json())
         .then(data => {
+            // console.log(data)
             if (data.restarted) {
                 console.log("Server was restarted. Refreshing the page...");
                 location.reload();
