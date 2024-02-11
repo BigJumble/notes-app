@@ -1,13 +1,11 @@
 class Camera
 {
-
-
-    static x = window.innerWidth/2;
-    static y = window.innerHeight/2;
+    static x = window.innerWidth / 2;
+    static y = window.innerHeight / 2;
     static z = 1;
 
     static targetX = this.x;
-    static targetY =this. y;
+    static targetY = this.y;
     static targetZ = this.z;
 
     static cursorX = 0;
@@ -16,14 +14,14 @@ class Camera
     static isDragging = false;
 
     static {
-        this.onMouseDragEvent();
+        this.#onMouseDragEvent();
     }
 
     static position()
     {
         return { x: this.x, y: this.y, z: this.z };
     }
-    static onMouseDragEvent()
+    static #onMouseDragEvent()
     {
         /** @param {MouseEvent} e */
         const startDrag = (e) =>
@@ -72,6 +70,7 @@ class Camera
         /** @param {MouseEvent} e */
         const handleScroll = (e) =>
         {
+            if(!e.target.contains(BackgroundGrid.canvas)) return;
             this.targetZ += e.deltaY > 0 ? -0.1 : 0.1;
             this.targetZ = Math.max(0.3, Math.min(1, this.targetZ));
 
@@ -82,11 +81,7 @@ class Camera
         document.addEventListener("mousedown", startDrag);
     }
 
-    // /**@param {BackgroundGrid} bcGrid*/
-    // static onWindowResize(bcGrid)
-    // {
-    //     window.addEventListener('resize', () => { bcGrid.setSize(), bcGrid.draw(); });
-    // }
+
 
     /**
      * @param {number} deltaTime last frame time taken.
@@ -131,8 +126,8 @@ class Camera
 
     static recenter()
     {
-        this.targetX = window.innerWidth/2;
-        this.targetY = window.innerHeight/2;
+        this.targetX = window.innerWidth / 2;
+        this.targetY = window.innerHeight / 2;
         update();
     }
 

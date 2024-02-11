@@ -46,6 +46,10 @@ function smoothUpdate(timestamp)
     {
         Camera.doMoveAnimationStep(updateState.deltaTime * updateState.moveSpeed);
         BackgroundGrid.setPosition(Camera.position());
+
+        Content.elements.forEach(element => {
+            Content.repositionElement(element);
+        });
     }
     if(!updateState.isColorTransitionAnimationComplete)
     {

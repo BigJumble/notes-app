@@ -42,6 +42,7 @@ class BackgroundGrid
     static #createCanvas()
     {
         this.canvas = document.createElement('canvas');
+        this.canvas.style.position = "absolute"
         this.setSize();
 
         document.body.appendChild(this.canvas);

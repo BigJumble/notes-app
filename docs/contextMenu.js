@@ -21,6 +21,10 @@ class ContextMenu
     static targetTC = Helper.hexaToRgba(this.colorPickerTC.dataset.value);
 
 
+    static cliX=0;
+    static cliY=0;
+
+
     /**
      * @typedef {Object} Theme
      * @property {string} FC - Notes Foreground color hex with alpha
@@ -97,17 +101,20 @@ class ContextMenu
             if (e.target === ContextMenu.menuElement) return;
             ContextMenu.menuElement.style.display = "flex";
 
-            let cliX = e.clientX;
-            let cliY = e.clientY;
+            ContextMenu.cliX = e.clientX;
+            ContextMenu.cliY = e.clientY;
 
             if(e.clientX > window.innerWidth - ContextMenu.menuElement.offsetWidth)
-            cliX-=ContextMenu.menuElement.offsetWidth;
+            ContextMenu.cliX-=ContextMenu.menuElement.offsetWidth;
 
             if(e.clientY > window.innerHeight - ContextMenu.menuElement.offsetHeight)
-            cliY-=ContextMenu.menuElement.offsetHeight;
+            ContextMenu.cliY-=ContextMenu.menuElement.offsetHeight;
 
-            ContextMenu.menuElement.style.left = `${cliX}px`;
-            ContextMenu.menuElement.style.top = `${cliY}px`;
+            ContextMenu.menuElement.style.left = `${ContextMenu.cliX}px`;
+            ContextMenu.menuElement.style.top = `${ContextMenu.cliY}px`;
+
+            ContextMenu.cliX = e.clientX;
+            ContextMenu.cliY = e.clientY;
         }
 
         document.addEventListener("mousedown", ContextMenu.#close);

@@ -13,3 +13,9 @@
 .BCbg{
     /* background-color: ; */
 }
+.FCbs{
+    /* box-shadow: 0 0 20px 0px rgb(165, 120, 247); */
+}
+.BackCbs{
+    /* box-shadow: 0 0 20px -5px rgb(165, 120, 247); */
+}

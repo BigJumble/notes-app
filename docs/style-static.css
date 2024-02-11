@@ -10,7 +10,7 @@ a,
 li,
 td,
 th,
-.text {
+.textarea {
     font-family: "Nunito", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
@@ -185,4 +185,44 @@ body {
     border: 2px solid rgb(121, 121, 121);
     border-radius: 5px;
     mix-blend-mode: difference;
+}
+
+.container {
+
+    position: absolute;
+    width: 92px;
+    height: 92px;
+    background-color: red;
+    transform-origin: top left;
+    border: 2px solid rgb(78, 0, 0);
+    box-shadow: 0 0 20px 0px rgb(165, 120, 247);
+    border-radius: 10px;
+    z-index: 100;
+    user-select: none;
+    backdrop-filter: blur(15px);
+}
+
+
+.textarea {
+    /* padding: 10%; */
+    box-sizing: content-box;
+    width: calc(100% - 50px);
+    padding: 25px;
+    height: calc(100% - 50px);
+    border-radius: 5px;
+    border: none;
+    /* margin: 10%; */
+    font-size: 18px;
+    resize: none;
+    background-color: transparent;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+
+}
+.textarea:focus {
+    outline: none;
+    border: none;
+}
+.textarea::-webkit-scrollbar {
+    display: none; /* Set the width to 0 to hide the scrollbar */
 }

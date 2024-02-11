@@ -78,6 +78,17 @@ class Helper
         return lerped;
     }
 
+    /**
+     * 
+     * @param {number} num 
+     * @param {number} snapSize
+     * @returns {number} snapped number
+     */
+    static snap(num, snapSize)
+    {
+        return Math.floor(num/snapSize)*snapSize;
+    }
+
     /**@type {StyleSheet}*/
     static styleSheet = document.getElementById("stylesheet").sheet;
 
@@ -92,5 +103,7 @@ class Helper
         this.styleSheet.cssRules[2].style.color = newTheme.BC;
         this.styleSheet.cssRules[3].style.borderColor = newTheme.FC;
         this.styleSheet.cssRules[4].style.backgroundColor = newTheme.BC;
+        this.styleSheet.cssRules[5].style.boxShadow = `0 0 20px 0px ${newTheme.FC}`;
+        this.styleSheet.cssRules[6].style.boxShadow = `0 0 20px 0px ${newTheme.BackC}`;
     }
 }
