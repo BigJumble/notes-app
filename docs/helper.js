@@ -103,7 +103,7 @@ class Helper
         this.styleSheet.cssRules[2].style.color = newTheme.BC;
         this.styleSheet.cssRules[3].style.borderColor = newTheme.FC;
         this.styleSheet.cssRules[4].style.backgroundColor = newTheme.BC;
-        this.styleSheet.cssRules[5].style.boxShadow = `0 0 20px 0px ${newTheme.FC}`;
-        this.styleSheet.cssRules[6].style.boxShadow = `0 0 20px 0px ${newTheme.BackC}`;
+        this.styleSheet.cssRules[5].style.boxShadow = `0 0 20px -10px ${newTheme.FC}`;
+        this.styleSheet.cssRules[6].style.boxShadow = `0 0 20px -10px ${newTheme.BackC}`;
     }
 }
