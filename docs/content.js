@@ -225,6 +225,11 @@ class Content
         el.style.height = `${(Number)(el.dataset.sizeY) * BackgroundGrid.tileSize + 10}px`;
     }
 
+    static setNoteTheme(el, {fc,bc,tc})
+    {
+        el.dataset.colors = JSON.stringify({fc,bc,tc});
+    }
+
     /**@param {HTMLElement} el  */
     static themeElement(el)
     {
@@ -232,8 +237,10 @@ class Content
             const colors = JSON.parse(el.dataset.colors);
             el.style.backgroundColor = colors.bc;
             el.style.borderColor = colors.fc;
-            el.style.boxShadow = `0px 0px 20px -5px ${colors.fc}`;
+            el.style.boxShadow = `0px 0px 20px -10px ${colors.fc}`;
             el.firstChild.style.color = colors.tc;
+            el.style.transition = "background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out";
+            el.firstChild.style.transition = "color 0.3s ease-out";
         }
     }
 }

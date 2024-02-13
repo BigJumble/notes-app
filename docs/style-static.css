@@ -89,12 +89,17 @@ body {
     user-select: none;
 }
 
-#menuSelTheme {
+.menuSelTheme {
     text-align: center;
     margin: 20px 0 10px;
     grid-column-start: 1;
     grid-column-end: 4;
     user-select: none;
+}
+
+.flexy{
+    display: flex;
+    flex-direction: column;
 }
 
 .colorPicker{
@@ -201,6 +206,7 @@ body {
     user-select: none;
     padding: 5px;
     backdrop-filter: blur(15px);
+    
 }
 
 

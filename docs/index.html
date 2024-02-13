@@ -21,30 +21,46 @@
 <body>
 
     <div id="contextMenu" class="contextMenu FCb BCbg BackCbs">
-        <h3 draggable="false" id="menuSelTheme2" class="TCc">Background Theme</h3>
-        <div class="menuColors">
-            <div id="colorPickerDotC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff"
-                data-x="0" data-y="0" data-h="0" data-a="1"></div>
-            <div id="colorPickerBackC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #000000ff;" data-value="#000000ff"
-                data-x="0" data-y="255" data-h="0" data-a="1"></div>
+        <div id="globalContextMenu" class="flexy">
+            <h3 draggable="false" id="menuSelTheme2" class="TCc">Background Theme</h3>
+            <div class="menuColors">
+                <div id="colorPickerDotC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff"
+                    data-x="0" data-y="0" data-h="0" data-a="1"></div>
+                <div id="colorPickerBackC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #000000ff;" data-value="#000000ff"
+                    data-x="0" data-y="255" data-h="0" data-a="1"></div>
+            </div>
+            <h3 draggable="false" class="menuSelTheme TCc">New Note Theme</h3>
+            <div class="menuColors">
+                <div id="colorPickerFC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff" data-x="0"
+                    data-y="0" data-h="0" data-a="1"></div>
+                <div id="colorPickerBC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #000000ff;" data-value="#000000ff" data-x="0"
+                    data-y="255" data-h="0" data-a="1"></div>
+                <div id="colorPickerTC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff" data-x="0"
+                    data-y="0" data-h="0" data-a="1"></div>
+            </div>
+            <div class="menuButton FCb" onclick="Content.makeNote(event)">
+                <p class="menuTxt TCc">New Note</p>
+            </div>
+            <div class="menuButton FCb" onclick="makeCanvas()">
+                <p class="menuTxt TCc">New Canvas</p>
+            </div>
+            <div class="menuButton FCb" onclick="Camera.recenter(); ContextMenu.hide()">
+                <p class="menuTxt TCc">Recenter</p>
+            </div>
         </div>
-        <h3 draggable="false" id="menuSelTheme" class="TCc">New Note Theme</h3>
-        <div class="menuColors">
-            <div id="colorPickerFC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff" data-x="0"
-                data-y="0" data-h="0" data-a="1"></div>
-            <div id="colorPickerBC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #000000ff;" data-value="#000000ff" data-x="0"
-                data-y="255" data-h="0" data-a="1"></div>
-            <div id="colorPickerTC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff" data-x="0"
-                data-y="0" data-h="0" data-a="1"></div>
-        </div>
-        <div class="menuButton FCb" onclick="Content.makeNote(event)">
-            <p class="menuTxt TCc">New Note</p>
-        </div>
-        <div class="menuButton FCb" onclick="makeCanvas()">
-            <p class="menuTxt TCc">New Canvas</p>
-        </div>
-        <div class="menuButton FCb" onclick="Camera.recenter(); ContextMenu.hide()">
-            <p class="menuTxt TCc">Recenter</p>
+        <div id="noteContextMenu" class="flexy">
+            <h3 draggable="false" class="menuSelTheme TCc">Note Theme</h3>
+            <div class="menuColors">
+                <div id="colorPickerFCn" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff" data-x="0"
+                    data-y="0" data-h="0" data-a="1"></div>
+                <div id="colorPickerBCn" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #000000ff;" data-value="#000000ff" data-x="0"
+                    data-y="255" data-h="0" data-a="1"></div>
+                <div id="colorPickerTCn" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff" data-x="0"
+                    data-y="0" data-h="0" data-a="1"></div>
+            </div>
+            <div class="menuButton FCb" onclick="Content.deleteElement(event)">
+                <span draggable="false" class="material-symbols-outlined">delete</span>
+            </div>
         </div>
     </div>
 

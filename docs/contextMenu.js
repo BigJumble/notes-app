@@ -2,11 +2,19 @@ class ContextMenu
 {
     static menuElement = document.getElementById("contextMenu");
 
+    static globalContextMenu = document.getElementById("globalContextMenu");
+    static noteContextMenu = document.getElementById("noteContextMenu");
+
     static colorPickerDotC = document.getElementById("colorPickerDotC");
     static colorPickerBackC = document.getElementById("colorPickerBackC");
     static colorPickerFC = document.getElementById("colorPickerFC");
     static colorPickerBC = document.getElementById("colorPickerBC");
     static colorPickerTC = document.getElementById("colorPickerTC");
+
+    static colorPickerFCn = document.getElementById("colorPickerFCn");
+    static colorPickerBCn = document.getElementById("colorPickerBCn");
+    static colorPickerTCn = document.getElementById("colorPickerTCn");
+    static noteTarget;
 
     static DotC = Helper.hexaToRgba(this.colorPickerDotC.dataset.value);
     static BackC = Helper.hexaToRgba(this.colorPickerBackC.dataset.value);
@@ -92,13 +100,26 @@ class ContextMenu
         document.removeEventListener("mousedown", ContextMenu.#close);
     }
 
-    /**Color picker popup */
+    /** @param {MouseEvent} e  Color picker popup */
     static show(e)
     {
         e.preventDefault();
 
-        if (e.which === 3) {
-            if (e.target === ContextMenu.menuElement) return;
+        if (e.button === 2) {
+            if (ContextMenu.menuElement.contains(e.target)) return;
+
+            if(e.target === BackgroundGrid.canvas)
+            {
+                ContextMenu.globalContextMenu.style.display = "flex";
+                ContextMenu.noteContextMenu.style.display = "none";
+            }
+            else
+            {
+                ContextMenu.noteTarget = e.target.id ? e.target : e.target.parentElement;
+                ContextMenu.globalContextMenu.style.display = "none";
+                ContextMenu.noteContextMenu.style.display = "flex";
+            }
+
             ContextMenu.menuElement.style.display = "flex";
 
             ContextMenu.cliX = e.clientX;
@@ -120,7 +141,10 @@ class ContextMenu
         document.addEventListener("mousedown", ContextMenu.#close);
     }
 
-
+    static #getNoteTheme()
+    {
+        return {fc: this.colorPickerFCn.dataset.value,bc: this.colorPickerBCn.dataset.value,tc: this.colorPickerTCn.dataset.value};
+    }
 
     static {
         this.colorPickerDotC.addEventListener("input", () =>
@@ -147,6 +171,22 @@ class ContextMenu
         {
             this.targetTC = Helper.hexaToRgba(this.colorPickerTC.dataset.value);
             update();
+        });
+
+        this.colorPickerFCn.addEventListener("input", () =>
+        {
+            Content.setNoteTheme(ContextMenu.noteTarget, ContextMenu.#getNoteTheme());
+            Content.themeElement(ContextMenu.noteTarget);
+        });
+        this.colorPickerBCn.addEventListener("input", () =>
+        {
+            Content.setNoteTheme(ContextMenu.noteTarget, ContextMenu.#getNoteTheme());
+            Content.themeElement(ContextMenu.noteTarget);
+        });
+        this.colorPickerTCn.addEventListener("input", () =>
+        {
+            Content.setNoteTheme(ContextMenu.noteTarget, ContextMenu.#getNoteTheme());
+            Content.themeElement(ContextMenu.noteTarget);
         });
 
         document.addEventListener("contextmenu", this.show)
