@@ -53,6 +53,33 @@ class ContextMenu
         };
     }
 
+    static setTheme({FC,BC,TC,DotC,BackC})
+    {
+        this.targetDotC = Helper.hexaToRgba(DotC);
+        this.targetBC = Helper.hexaToRgba(BC);
+        this.targetBackC = Helper.hexaToRgba(BackC);
+        this.targetFC = Helper.hexaToRgba(FC);
+        this.targetTC = Helper.hexaToRgba(TC);
+
+        this.DotC =Helper.hexaToRgba( DotC);
+        this.BC = Helper.hexaToRgba(BC);
+        this.BackC = Helper.hexaToRgba(BackC);
+        this.FC = Helper.hexaToRgba(FC);
+        this.TC = Helper.hexaToRgba(TC);
+
+        this.colorPickerBackC.dataset.value = BackC;
+        this.colorPickerDotC.dataset.value = DotC;
+        this.colorPickerFC.dataset.value = FC;
+        this.colorPickerBC.dataset.value = BC;
+        this.colorPickerTC.dataset.value = TC;
+
+        this.colorPickerBackC.style.backgroundColor = BackC;
+        this.colorPickerDotC.style.backgroundColor = DotC;
+        this.colorPickerFC.style.backgroundColor = FC;
+        this.colorPickerBC.style.backgroundColor = BC;
+        this.colorPickerTC.style.backgroundColor = TC;
+    }
+
     /**
      * @param {number} timestep deltaTime * speed
      */
@@ -118,6 +145,8 @@ class ContextMenu
                 ContextMenu.noteTarget = e.target.id ? e.target : e.target.parentElement;
                 ContextMenu.globalContextMenu.style.display = "none";
                 ContextMenu.noteContextMenu.style.display = "flex";
+
+                ContextMenu.#setColors();
             }
 
             ContextMenu.menuElement.style.display = "flex";
@@ -139,6 +168,31 @@ class ContextMenu
         }
 
         document.addEventListener("mousedown", ContextMenu.#close);
+    }
+
+    static #setColors()
+    {
+        if(!!ContextMenu.noteTarget.dataset.colors)
+        {
+            const colors = JSON.parse(ContextMenu.noteTarget.dataset.colors)
+            this.colorPickerFCn.dataset.value = colors.fc;
+            this.colorPickerBCn.dataset.value = colors.bc;
+            this.colorPickerTCn.dataset.value = colors.tc;
+
+            this.colorPickerFCn.style.backgroundColor = colors.fc;
+            this.colorPickerBCn.style.backgroundColor = colors.bc;
+            this.colorPickerTCn.style.backgroundColor = colors.tc;
+        }
+        else
+        {
+            this.colorPickerFCn.dataset.value = this.colorPickerFC.dataset.value;
+            this.colorPickerBCn.dataset.value = this.colorPickerBC.dataset.value;
+            this.colorPickerTCn.dataset.value = this.colorPickerTC.dataset.value;
+
+            this.colorPickerFCn.style.backgroundColor = this.colorPickerFCn.dataset.value;
+            this.colorPickerBCn.style.backgroundColor = this.colorPickerBCn.dataset.value;
+            this.colorPickerTCn.style.backgroundColor = this.colorPickerTCn.dataset.value;
+        }
     }
 
     static #getNoteTheme()

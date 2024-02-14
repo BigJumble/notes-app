@@ -8,34 +8,54 @@ class Content
     /**@type {HTMLElement[]} */
     static elements = [];
 
-    /** @param {MouseEvent} e */
+    static nextID = 0;
+
+    /** @param {object} e data from loader */
     static makeNote(e)
     {
         const position = Camera.position();
 
         const newDiv = document.createElement('div');
         const txt = document.createElement('textarea');
-        newDiv.id = 'text-' + this.elements.length;
+        newDiv.id = 'text-' + this.nextID;
+        this.nextID++;
         newDiv.className = 'container FCb BCbg FCbs';
-        newDiv.dataset.posX = Helper.snap((-position.x + ContextMenu.cliX) / position.z, BackgroundGrid.tileSize);
-        newDiv.dataset.posY = Helper.snap((-position.y + ContextMenu.cliY) / position.z, BackgroundGrid.tileSize);
-        newDiv.dataset.sizeX = this.defaultSizeX;
-        newDiv.dataset.sizeY = this.defaultSizeY;
+
+        if(!!e)
+        {
+            newDiv.dataset.posX = e.posX;
+            newDiv.dataset.posY = e.posY;
+            newDiv.dataset.sizeX = e.sizeX;
+            newDiv.dataset.sizeY = e.sizeY;
+            txt.textContent = e.content;
+            if(e.colors!=="default")
+                newDiv.dataset.colors = e.colors;
+        }
+        else
+        {
+            newDiv.dataset.posX = Helper.snap((-position.x + ContextMenu.cliX) / position.z, BackgroundGrid.tileSize);
+            newDiv.dataset.posY = Helper.snap((-position.y + ContextMenu.cliY) / position.z, BackgroundGrid.tileSize);
+            newDiv.dataset.sizeX = this.defaultSizeX;
+            newDiv.dataset.sizeY = this.defaultSizeY;
+
+            txt.textContent = this.defaultText;
+        }
+
         newDiv.draggable = false;
 
         txt.spellcheck = false;
-        txt.textContent = this.defaultText;
+
         txt.className = 'textarea TCc';
         newDiv.append(txt);
 
         document.body.appendChild(newDiv);
 
-        txt.addEventListener("change", () =>
-        {
-            let data = JSON.parse(localStorage.getItem(newDiv.id));
-            data.text = this.value;
-            localStorage.setItem(newDiv.id, JSON.stringify(data));
-        });
+        // txt.addEventListener("change", () =>
+        // {
+        //     let data = JSON.parse(localStorage.getItem(newDiv.id));
+        //     data.text = this.value;
+        //     localStorage.setItem(newDiv.id, JSON.stringify(data));
+        // });
 
         newDiv.addEventListener("mouseenter", this.#handleMoveResize);
 
@@ -43,6 +63,18 @@ class Content
         this.elements.push(newDiv);
         this.repositionElement(newDiv);
         this.resizeElement(newDiv);
+        this.themeElement(newDiv);
+    }
+
+    /**@param {HTMLElement} el  */
+    static getElementData(el)
+    {
+        return {posX:el.dataset.posX,
+                posY:el.dataset.posY,
+                sizeX:el.dataset.sizeX,
+                sizeY:el.dataset.sizeY,
+                colors:el.dataset.colors ? el.dataset.colors:"default",
+                content:el.firstChild.value}
     }
 
     /** @param {MouseEvent} e  */
@@ -76,6 +108,7 @@ class Content
         function handleClick(e2)
         {
             if (e2.target !== currentElement) return;
+            if(e2.button !==0) return;
             isResizing = true;
             const initialX = e2.clientX;
             const initialY = e2.clientY;
@@ -203,8 +236,6 @@ class Content
     }
 
 
-
-
     /**@param {HTMLElement} el  */
     static repositionElement(el)
     {
@@ -242,5 +273,17 @@ class Content
             el.style.transition = "background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out";
             el.firstChild.style.transition = "color 0.3s ease-out";
         }
+    }
+
+    /** @param {MouseEvent} e */
+    static deleteElement(e)
+    {
+        const index = this.elements.indexOf(ContextMenu.noteTarget);
+        if (index !== -1) {
+            this.elements.splice(index, 1);
+            ContextMenu.noteTarget.remove();
+        }
+        ContextMenu.hide();
+
     }
 }

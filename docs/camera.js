@@ -21,6 +21,15 @@ class Camera
     {
         return { x: this.x, y: this.y, z: this.z };
     }
+    static setPosition({x,y,z})
+    {
+        this.x=x;
+        this.y=y;
+        this.z=z;
+        this.targetX=x;
+        this.targetY=y;
+        this.targetZ=z;
+    }
     static #onMouseDragEvent()
     {
         /** @param {MouseEvent} e */

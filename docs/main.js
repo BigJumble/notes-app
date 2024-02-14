@@ -1,18 +1,5 @@
 "use strict";
 
-
-function load()
-{
-    BackgroundGrid.setPosition(Camera.position());
-    BackgroundGrid.setTheme(ContextMenu.theme());
-    BackgroundGrid.draw();
-
-    Helper.setDynamicTheme(ContextMenu.theme());
-}
-load();
-
-
-
 // Less garbage collection after each frame (probably)
 const updateState = {
     moveSpeed: 10,
@@ -24,6 +11,17 @@ const updateState = {
     isColorTransitionAnimationComplete: true
 };
 
+function load()
+{
+    Loader.loadAll();
+
+    BackgroundGrid.setPosition(Camera.position());
+    BackgroundGrid.setTheme(ContextMenu.theme());
+    BackgroundGrid.draw();
+
+    Helper.setDynamicTheme(ContextMenu.theme());
+}
+load();
 
 /**Called from events*/
 function update()

@@ -24,13 +24,13 @@ class ColorPicker // everything is static because there is only one color picker
         const green = imageData.data[1];
         const blue = imageData.data[2];
         const alpha = this.#alphaSlider.value;
-
         this.#colorInputHex.value = Helper.rgbaToHexa({r:red, g:green, b:blue, a:alpha});
+        this.#setValue();
+    }
+
+    static #setValue()
+    {
         this.#calledBy.dataset.value = this.#colorInputHex.value;
-        this.#calledBy.dataset.x = this.#clampedX;
-        this.#calledBy.dataset.y = this.#clampedY;
-        this.#calledBy.dataset.h = this.#hueSlider.value;
-        this.#calledBy.dataset.a = this.#alphaSlider.value;
         this.#calledBy.style.backgroundColor = this.#colorInputHex.value;
         this.#calledBy.dispatchEvent(new Event("input"));
     }
@@ -108,11 +108,10 @@ class ColorPicker // everything is static because there is only one color picker
         this.#colorPointerRect = this.#colorPointer.getBoundingClientRect();
         this.#colorPointer.style.transform = `translate(${-this.#colorPointerRect.width / 2}px, ${-this.#colorPointerRect.height / 2}px)`;
 
+        this.#colorInputHex.value = this.#calledBy.dataset.value;
 
-        this.#clampedX = this.#calledBy.dataset.x;
-        this.#clampedY = this.#calledBy.dataset.y;
-        this.#hueSlider.value = this.#calledBy.dataset.h;
-        this.#alphaSlider.value = this.#calledBy.dataset.a;
+
+        this.#hexaToValues(this.#calledBy.dataset.value);
 
         this.#colorPointer.style.left = this.#clampedX + 'px';
         this.#colorPointer.style.top = this.#clampedY + 'px';
@@ -125,7 +124,33 @@ class ColorPicker // everything is static because there is only one color picker
         document.addEventListener("mousedown", this.#close);
     }
 
+    static #hexaToValues(hexa)
+    {
+        if(!Helper.isEightCharHexColor(hexa)) return;
+
+        const hsva = Helper.rgbaToHsva(Helper.hexaToRgba(hexa));
+        ColorPicker.#hueSlider.value = hsva.h;
+        ColorPicker.#alphaSlider.value = hsva.a;
+        ColorPicker.#clampedX = hsva.s*2.55;
+        ColorPicker.#clampedY = 255-hsva.v*2.55;
+    }
+
     static {
+
+        this.#colorInputHex.addEventListener("input",(e)=>{
+            if(!Helper.isEightCharHexColor(ColorPicker.#colorInputHex.value)) return;
+
+            ColorPicker.#hexaToValues(ColorPicker.#colorInputHex.value);
+
+            ColorPicker.#colorPointer.style.left = ColorPicker.#clampedX + 'px';
+            ColorPicker.#colorPointer.style.top = ColorPicker.#clampedY + 'px';
+
+            ColorPicker.#colorCtx();
+            ColorPicker.#alphaSlider.style.background = `linear-gradient(to right, #00000000, hsl(${ColorPicker.#hueSlider.value}, 100%, 50%))`;
+
+            ColorPicker.#setValue();
+
+        });
 
         this.#colorPointer.addEventListener("mousedown", (e) =>
         {
