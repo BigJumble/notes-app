@@ -79,7 +79,7 @@ class Camera
         /** @param {MouseEvent} e */
         const handleScroll = (e) =>
         {
-            if(!e.target.contains(BackgroundGrid.canvas)) return;
+            if(!(e.target.contains(BackgroundGrid.canvas) || e.target.parentNode.id.includes("rel"))) return;
             this.targetZ += e.deltaY > 0 ? -0.1 : 0.1;
             this.targetZ = Math.max(0.3, Math.min(1, this.targetZ));
 

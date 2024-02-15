@@ -14,6 +14,9 @@ class ContextMenu
     static colorPickerFCn = document.getElementById("colorPickerFCn");
     static colorPickerBCn = document.getElementById("colorPickerBCn");
     static colorPickerTCn = document.getElementById("colorPickerTCn");
+
+    static route = document.getElementById("route");
+    static themeTxt = document.getElementById("themeTxt");
     static noteTarget;
 
     static DotC = Helper.hexaToRgba(this.colorPickerDotC.dataset.value);
@@ -133,7 +136,7 @@ class ContextMenu
         e.preventDefault();
 
         if (e.button === 2) {
-            if (ContextMenu.menuElement.contains(e.target)) return;
+            if (ContextMenu.menuElement.contains(e.target) || ColorPicker.element.contains(e.target)) return;
 
             if(e.target === BackgroundGrid.canvas)
             {
@@ -145,6 +148,19 @@ class ContextMenu
                 ContextMenu.noteTarget = e.target.id ? e.target : e.target.parentElement;
                 ContextMenu.globalContextMenu.style.display = "none";
                 ContextMenu.noteContextMenu.style.display = "flex";
+
+                if(ContextMenu.noteTarget.id.includes("rel"))
+                {
+                    ContextMenu.themeTxt.textContent = "Relation Theme";
+                    ContextMenu.colorPickerBCn.style.display="none";
+                    ContextMenu.route.style.display="none";
+                }
+                else
+                {
+                    ContextMenu.themeTxt.textContent = "Note Theme";
+                    ContextMenu.colorPickerBCn.style.display="block";
+                    ContextMenu.route.style.display="block";
+                }
 
                 ContextMenu.#setColors();
             }
@@ -199,6 +215,8 @@ class ContextMenu
     {
         return {fc: this.colorPickerFCn.dataset.value,bc: this.colorPickerBCn.dataset.value,tc: this.colorPickerTCn.dataset.value};
     }
+
+
 
     static {
         this.colorPickerDotC.addEventListener("input", () =>

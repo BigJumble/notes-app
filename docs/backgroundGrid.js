@@ -8,14 +8,26 @@ class BackgroundGrid
     static tileSize = 50;
     static backgroundColor;
     static dotsColor;
+
+    /** @type {HTMLCanvasElement} */
     static canvas;
+    // static osc;
     static ctx;
+
+    // static worker = new Worker("backgroundWorker.js");
 
     static {
 
         this.#createCanvas();
+        // this.osc = this.canvas.transferControlToOffscreen();
         this.ctx = this.canvas.getContext("2d");
         window.addEventListener('resize', () => { this.setSize(), this.draw(); });
+
+        // this.worker.postMessage({
+        //     msg:"load",
+        //     osc:this.osc,
+        // },[this.osc])
+
     }
 
 
@@ -62,6 +74,19 @@ class BackgroundGrid
 
     static draw()
     {
+        // this.worker.postMessage({
+        //     msg:"newFrame",
+        //     tileSize:this.tileSize,
+        //     z:this.z,
+        //     backgroundColor:this.backgroundColor,
+        //     width:this.canvas.width,
+        //     height:this.canvas.height,
+        //     dotsColor:this.dotsColor,
+        //     x:this.x,
+        //     y:this.y,
+        // })
+
+        // return;
         const cellSize = this.tileSize * this.z;
         this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);

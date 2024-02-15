@@ -264,8 +264,11 @@ class Content
     /**@param {HTMLElement} el  */
     static themeElement(el)
     {
-        if (!!el.dataset.colors) {
-            const colors = JSON.parse(el.dataset.colors);
+        if (!el.dataset.colors) return;
+        const colors = JSON.parse(el.dataset.colors);
+
+        if(el.id.includes("text"))
+        {
             el.style.backgroundColor = colors.bc;
             el.style.borderColor = colors.fc;
             el.style.boxShadow = `0px 0px 20px -10px ${colors.fc}`;
@@ -273,7 +276,22 @@ class Content
             el.style.transition = "background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out";
             el.firstChild.style.transition = "color 0.3s ease-out";
         }
+    
+
+        if(el.id.includes("rel"))
+        {
+            el.childNodes.forEach((elem)=>{
+                elem.style.backgroundColor = colors.tc;
+                elem.style.borderColor = colors.fc;
+                elem.style.boxShadow = `0px 0px 20px -10px ${colors.fc}`;
+                elem.style.transition = "background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out";
+            })
+
+        }
+        
     }
+
+
 
     /** @param {MouseEvent} e */
     static deleteElement(e)
@@ -285,5 +303,78 @@ class Content
         }
         ContextMenu.hide();
 
+    }
+
+
+    static addRelation()
+    {
+        ContextMenu.hide();
+
+        let pos = Camera.position();
+        let startX = -pos.x/pos.z + ContextMenu.cliX/pos.z;
+        let startY = -pos.y/pos.z + ContextMenu.cliY/pos.z;
+
+        const newDiv = document.createElement('div');
+        newDiv.id = 'rel-' + this.nextID;
+        this.nextID++;
+        newDiv.className = 'relation';
+
+        newDiv.dataset.posX = startX;
+        newDiv.dataset.posY = startY;
+        newDiv.draggable = false;
+
+        const point1 = document.createElement('div');
+        const line = document.createElement('div');
+        const point2 = document.createElement('div');
+
+        point1.className = "point TCbg FCb FCbs";
+        line.className =   "line TCbg FCb FCbs";
+        point2.className = "point TCbg FCb FCbs";
+
+
+        newDiv.appendChild(line);
+        newDiv.appendChild(point1);
+        newDiv.appendChild(point2);
+        document.body.appendChild(newDiv);
+        this.elements.push(newDiv);
+
+        this.repositionElement(newDiv);
+        this.themeElement(newDiv);
+
+
+        let endX = startX;
+        let endY = startY;
+
+        /** @param {MouseEvent} e  */
+        function handleMouseMove(e)
+        {
+            const moved = Camera.position();
+            moved.x -=pos.x;
+            moved.y -=pos.y;
+
+            endX = -startX +(-pos.x + e.clientX- moved.x)/moved.z;
+            endY = -startY +(-pos.y + e.clientY - moved.y)/moved.z;
+            // endX/=moved.z;
+
+            const mag = Math.sqrt(endX*endX+endY*endY);
+            
+            const angle = Math.atan2(endY,endX);
+            line.style.transform = `rotate(${angle}rad)`
+
+            line.style.width = `${mag}px`;
+            point2.style.transform = `translate(${endX}px, ${endY}px)`;
+            
+        }
+        /** @param {MouseEvent} e  */
+        function handleMouseDown(e)
+        {
+            if(e.button!==0) return;
+
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mousedown", handleMouseDown);
+        }
+ 
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mousedown", handleMouseDown);
     }
 }

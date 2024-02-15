@@ -2,7 +2,7 @@
 
 // Less garbage collection after each frame (probably)
 const updateState = {
-    moveSpeed: 10,
+    moveSpeed: 20,
     colorSpeed: 5,
     updating: false,
     lastTimestamp: 0,
