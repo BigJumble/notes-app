@@ -6,76 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notes App</title>
 
-    <link rel="manifest" href="manifest.json">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap">
 
     <link rel="stylesheet" href="style-static.css">
-    <link rel="stylesheet" href="style-dynamic.css" id="stylesheet">
-
+    <!-- <link rel="stylesheet" href="style-dynamic.css" id="stylesheet"> -->
+    <script defer src="./helper.js"></script>
+    <script defer src="./camera.js"></script>
+    <script defer src="./animator.js"></script>
+    <script defer src="./loader.js"></script>
 </head>
 
 <body>
+    <svg id="screenSVG" viewBox="0 0 100 100" style="transition: 10s;">
+        <defs>
+            <pattern id="gridPattern" width="0.003125" height="0.005">
+                <g id="plusPattern" style="display: none;">
+                    <line x1="18" y1="25" x2="32" y2="25" style="stroke: white; stroke-width: 1.5;"></line>
+                    <line x1="25" y1="18" x2="25" y2="32" style="stroke: white; stroke-width: 1.5;"></line>
+                </g>
+                <g id="dotPattern" style="display: block;">
+                    <circle cx="25" cy="25" r="2" fill="white" />
+                </g>
+            </pattern>
+        </defs>
+        <circle cx="0" cy="0" r="10" fill="#444444" />
+        <rect id="grid" width="16000" height="10000" x="-25" y="-25" fill="url(#gridPattern)" />
 
-    <div id="contextMenu" class="contextMenu FCb BCbg BackCbs">
-        <div id="globalContextMenu" class="flexy">
-            <h3 draggable="false" id="menuSelTheme2" class="TCc">Background Theme</h3>
-            <div class="menuColors">
-                <div id="colorPickerDotC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff"></div>
-                <div id="colorPickerBackC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #000000ff;" data-value="#000000ff"></div>
-            </div>
-            <h3 draggable="false" class="menuSelTheme TCc">New Note Theme</h3>
-            <div class="menuColors">
-                <div id="colorPickerFC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff"></div>
-                <div id="colorPickerBC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #000000ff;" data-value="#000000ff"></div>
-                <div id="colorPickerTC" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff"></div>
-            </div>
-            <div class="menuButton FCb" onclick="Content.makeNote()">
-                <p class="menuTxt TCc">New Note</p>
-            </div>
-            <div class="menuButton FCb" onclick="makeCanvas()">
-                <p class="menuTxt TCc">New Canvas</p>
-            </div>
-            <div class="menuButton FCb" onclick="Camera.recenter(); ContextMenu.hide()">
-                <p class="menuTxt TCc">Recenter</p>
-            </div>
-        </div>
-        <div id="noteContextMenu" class="flexy">
-            <h3 id="themeTxt" draggable="false" class="menuSelTheme TCc">Note Theme</h3>
-            <div class="menuColors">
-                <div id="colorPickerFCn" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff"></div>
-                <div id="colorPickerBCn" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #000000ff;" data-value="#000000ff"></div>
-                <div id="colorPickerTCn" class="colorPicker" onclick="ColorPicker.show(event)" style="background-color: #ffffffff;" data-value="#ffffffff"></div>
-            </div>
-            <div id="route" class="menuButton FCb" onclick="Content.addRelation(event)">
-                <span draggable="false" class="material-symbols-outlined">route</span>
-            </div>
-            <div class="menuButton FCb" onclick="Content.deleteElement(event)">
-                <span draggable="false" class="material-symbols-outlined">delete</span>
-            </div>
-        </div>
-    </div>
+        <g id="content">
 
-    <div id="colorSliderWindow" class="colorSlider FCb">
-        <div id="colorPointer" class="colorPointer"></div>
-        <canvas id="colorWindow" class="colorWindow" width="256" height="256"></canvas>
-        <input type="range" class="slider sliderthumb" id="hueSlider" min="0" max="360" step="0.1" value="180">
-        <input type="range" id="alphaSlider" class="slider2 sliderthumb" min="0" max="1" step="0.01" value="1">
-        <input type="text" id="colorInputHex" placeholder="#RRGGBBAA">
-    </div>
+        </g>
 
-    <script src="./helper.js"></script>
-    <script src="./content.js"></script>
-    <script src="./colorPicker.js"></script>
-    <script src="./camera.js"></script>
-    <script src="./backgroundGrid.js"></script>
-    <script src="./contextMenu.js"></script>
-    <script src="./loader.js"></script>
-    <script src="./main.js"></script>
-    <script src="./refresh.js"></script>
+    </svg>
 </body>
 
 </html>

@@ -17,22 +17,25 @@ class Content
 
         const newDiv = document.createElement('div');
         const txt = document.createElement('textarea');
-        newDiv.id = 'text-' + this.nextID;
-        this.nextID++;
+
         newDiv.className = 'container FCb BCbg FCbs';
 
-        if(!!e)
-        {
+        if (!!e) {
+            if (this.nextID <= e.id) this.nextID = e.id + 1;
+
+            newDiv.id = 'text-' + e.id;
             newDiv.dataset.posX = e.posX;
             newDiv.dataset.posY = e.posY;
             newDiv.dataset.sizeX = e.sizeX;
             newDiv.dataset.sizeY = e.sizeY;
             txt.textContent = e.content;
-            if(e.colors!=="default")
+            if (e.colors !== "default")
                 newDiv.dataset.colors = e.colors;
         }
-        else
-        {
+        else {
+            newDiv.id = 'text-' + this.nextID;
+            this.nextID++;
+
             newDiv.dataset.posX = Helper.snap((-position.x + ContextMenu.cliX) / position.z, BackgroundGrid.tileSize);
             newDiv.dataset.posY = Helper.snap((-position.y + ContextMenu.cliY) / position.z, BackgroundGrid.tileSize);
             newDiv.dataset.sizeX = this.defaultSizeX;
@@ -69,12 +72,14 @@ class Content
     /**@param {HTMLElement} el  */
     static getElementData(el)
     {
-        return {posX:el.dataset.posX,
-                posY:el.dataset.posY,
-                sizeX:el.dataset.sizeX,
-                sizeY:el.dataset.sizeY,
-                colors:el.dataset.colors ? el.dataset.colors:"default",
-                content:el.firstChild.value}
+        return {
+            posX: el.dataset.posX,
+            posY: el.dataset.posY,
+            sizeX: el.dataset.sizeX,
+            sizeY: el.dataset.sizeY,
+            colors: el.dataset.colors ? el.dataset.colors : "default",
+            content: el.firstChild.value
+        };
     }
 
     /** @param {MouseEvent} e  */
@@ -108,7 +113,7 @@ class Content
         function handleClick(e2)
         {
             if (e2.target !== currentElement) return;
-            if(e2.button !==0) return;
+            if (e2.button !== 0) return;
             isResizing = true;
             const initialX = e2.clientX;
             const initialY = e2.clientY;
@@ -122,6 +127,36 @@ class Content
 
             let stopMovingX = null;
             let stopMovingY = null;
+
+            const relsToMoveFTemp = currentElement.dataset.firstAnchor ? JSON.parse(currentElement.dataset.firstAnchor) : [];
+            const relsToMoveSTemp = currentElement.dataset.secondAnchor ? JSON.parse(currentElement.dataset.secondAnchor) : [];
+            const relsToMoveF = [];
+            const relsToMoveS = [];
+            const datasetRelsToMoveF = [];
+            const datasetRelsToMoveS = [];
+
+            for (const el of relsToMoveFTemp) {
+                const elem = document.getElementById(el);
+                relsToMoveF.push(elem);
+                const coord = {
+                    posX: JSON.parse(elem.dataset.posX),
+                    posY: JSON.parse(elem.dataset.posY),
+                    endX: JSON.parse(elem.dataset.endX),
+                    endY: JSON.parse(elem.dataset.endY),
+                };
+                datasetRelsToMoveF.push(coord);
+            }
+            for (const el of relsToMoveSTemp) {
+                const elem = document.getElementById(el);
+                relsToMoveS.push(elem);
+                const coord = {
+                    posX: JSON.parse(elem.dataset.posX),
+                    posY: JSON.parse(elem.dataset.posY),
+                    endX: JSON.parse(elem.dataset.endX),
+                    endY: JSON.parse(elem.dataset.endY),
+                };
+                datasetRelsToMoveS.push(coord);
+            }
 
             function handleMouseMove(e3)
             {
@@ -181,6 +216,17 @@ class Content
                     stopMovingY = null;
                 }
 
+                for (let i = 0; i < relsToMoveF.length; i++) {
+                    const data = datasetRelsToMoveF[i];
+                    Content.recalculateRelPos(relsToMoveF[i],data.posX+deltaX,data.posY+deltaY,data.endX-deltaX,data.endY-deltaY)
+                }
+
+                for (let i = 0; i < relsToMoveS.length; i++) {
+                    const data = datasetRelsToMoveS[i];
+                    Content.recalculateRelPos(relsToMoveS[i],data.posX,data.posY,data.endX+deltaX,data.endY+deltaY)
+                }
+
+
                 Content.repositionElement(currentElement);
                 Content.resizeElement(currentElement);
             }
@@ -197,6 +243,25 @@ class Content
                 currentElement.dataset.sizeY = Math.round(sizeY);
                 currentElement.dataset.posX = Math.round(posX / BackgroundGrid.tileSize) * BackgroundGrid.tileSize;
                 currentElement.dataset.posY = Math.round(posY / BackgroundGrid.tileSize) * BackgroundGrid.tileSize;
+
+                const deltaX = -posX + Number(currentElement.dataset.posX);
+                const deltaY = -posY + Number(currentElement.dataset.posY);
+
+                for (let i = 0; i < relsToMoveF.length; i++) {
+                    const relPosX = Number(relsToMoveF[i].dataset.posX);
+                    const relPosY = Number(relsToMoveF[i].dataset.posY);
+                    const relEndX = Number(relsToMoveF[i].dataset.endX);
+                    const relEndY = Number(relsToMoveF[i].dataset.endY);
+                    Content.recalculateRelPos(relsToMoveF[i],relPosX+deltaX,relPosY+deltaY,relEndX-deltaX,relEndY-deltaY);
+                }
+
+                for (let i = 0; i < relsToMoveS.length; i++) {
+                    const relPosX = Number(relsToMoveS[i].dataset.posX);
+                    const relPosY = Number(relsToMoveS[i].dataset.posY);
+                    const relEndX = Number(relsToMoveS[i].dataset.endX);
+                    const relEndY = Number(relsToMoveS[i].dataset.endY);
+                    Content.recalculateRelPos(relsToMoveS[i],relPosX,relPosY,relEndX+deltaX,relEndY+deltaY);
+                }
 
                 Content.repositionElement(currentElement);
                 Content.resizeElement(currentElement);
@@ -256,9 +321,9 @@ class Content
         el.style.height = `${(Number)(el.dataset.sizeY) * BackgroundGrid.tileSize + 10}px`;
     }
 
-    static setNoteTheme(el, {fc,bc,tc})
+    static setNoteTheme(el, { fc, bc, tc })
     {
-        el.dataset.colors = JSON.stringify({fc,bc,tc});
+        el.dataset.colors = JSON.stringify({ fc, bc, tc });
     }
 
     /**@param {HTMLElement} el  */
@@ -267,8 +332,7 @@ class Content
         if (!el.dataset.colors) return;
         const colors = JSON.parse(el.dataset.colors);
 
-        if(el.id.includes("text"))
-        {
+        if (el.id.includes("text")) {
             el.style.backgroundColor = colors.bc;
             el.style.borderColor = colors.fc;
             el.style.boxShadow = `0px 0px 20px -10px ${colors.fc}`;
@@ -276,43 +340,96 @@ class Content
             el.style.transition = "background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out";
             el.firstChild.style.transition = "color 0.3s ease-out";
         }
-    
 
-        if(el.id.includes("rel"))
-        {
-            el.childNodes.forEach((elem)=>{
+
+        if (el.id.includes("rel")) {
+            el.childNodes.forEach((elem) =>
+            {
                 elem.style.backgroundColor = colors.tc;
                 elem.style.borderColor = colors.fc;
                 elem.style.boxShadow = `0px 0px 20px -10px ${colors.fc}`;
                 elem.style.transition = "background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out";
-            })
+            });
 
         }
-        
+
     }
-
-
 
     /** @param {MouseEvent} e */
     static deleteElement(e)
     {
+        const removedID = ContextMenu.noteTarget.id;
+        if (!!ContextMenu.noteTarget.dataset?.fa) {
+            const fa = document.getElementById(ContextMenu.noteTarget.dataset.fa);
+            let anchors = JSON.parse(fa.dataset.firstAnchor);
+            anchors = anchors.filter(item => item !== removedID);
+            fa.dataset.firstAnchor = JSON.stringify(anchors);
+        }
+        if (!!ContextMenu.noteTarget.dataset?.sa) {
+            const sa = document.getElementById(ContextMenu.noteTarget.dataset.sa);
+            let anchors = JSON.parse(sa.dataset.secondAnchor);
+            anchors = anchors.filter(item => item !== removedID);
+            sa.dataset.secondAnchor = JSON.stringify(anchors);
+        }
+
+        const oldNoteTarget = ContextMenu.noteTarget;
+        if (!!ContextMenu.noteTarget.dataset?.firstAnchor) {
+            let toRemove = JSON.parse(ContextMenu.noteTarget.dataset.firstAnchor);
+            for (const elem of toRemove) {
+                ContextMenu.noteTarget = document.getElementById(elem);
+                this.deleteElement();
+            }
+        }
+        if (!!ContextMenu.noteTarget.dataset?.secondAnchor) {
+            let toRemove = JSON.parse(ContextMenu.noteTarget.dataset.secondAnchor);
+            console.log(toRemove);
+            for (const elem of toRemove) {
+                ContextMenu.noteTarget = document.getElementById(elem);
+                this.deleteElement();
+            }
+        }
+        ContextMenu.noteTarget = oldNoteTarget;
+
         const index = this.elements.indexOf(ContextMenu.noteTarget);
         if (index !== -1) {
             this.elements.splice(index, 1);
             ContextMenu.noteTarget.remove();
         }
         ContextMenu.hide();
-
     }
 
+    static recalculateRelPos(rel, startX, startY, endX, endY, first = false)
+    {
+        const line = rel.childNodes[0];
+        const point1 = rel.childNodes[1];
+        const point2 = rel.childNodes[2];
 
+        rel.dataset.posX = startX;
+        rel.dataset.posY = startY;
+        rel.dataset.endX = endX;
+        rel.dataset.endY = endY;
+
+        Content.repositionElement(rel);
+
+        if (first) return;
+
+        const mag = Math.sqrt(endX * endX + endY * endY);
+
+        const angle = Math.atan2(endY, endX);
+        line.style.transform = `rotate(${angle}rad)`;
+
+        line.style.width = `${mag}px`;
+        point2.style.transform = `translate(${endX}px, ${endY}px)`;
+
+    }
     static addRelation()
     {
+        const firstAnchor = ContextMenu.noteTarget;
         ContextMenu.hide();
 
         let pos = Camera.position();
-        let startX = -pos.x/pos.z + ContextMenu.cliX/pos.z;
-        let startY = -pos.y/pos.z + ContextMenu.cliY/pos.z;
+        let startX = -pos.x / pos.z + ContextMenu.cliX / pos.z;
+        let startY = -pos.y / pos.z + ContextMenu.cliY / pos.z;
 
         const newDiv = document.createElement('div');
         newDiv.id = 'rel-' + this.nextID;
@@ -328,7 +445,7 @@ class Content
         const point2 = document.createElement('div');
 
         point1.className = "point TCbg FCb FCbs";
-        line.className =   "line TCbg FCb FCbs";
+        line.className = "line TCbg FCb FCbs";
         point2.className = "point TCbg FCb FCbs";
 
 
@@ -338,42 +455,60 @@ class Content
         document.body.appendChild(newDiv);
         this.elements.push(newDiv);
 
-        this.repositionElement(newDiv);
+        // this.repositionElement(newDiv);
         this.themeElement(newDiv);
 
 
         let endX = startX;
         let endY = startY;
 
+        this.recalculateRelPos(newDiv, startX, startY, endX, endY, true);
+
+        if (!firstAnchor.dataset.firstAnchor)
+            firstAnchor.dataset.firstAnchor = JSON.stringify([newDiv.id]);
+        else {
+            const anchors = JSON.parse(firstAnchor.dataset.firstAnchor);
+            firstAnchor.dataset.firstAnchor = JSON.stringify([...anchors, newDiv.id]);
+        }
+
+        newDiv.dataset.fa = firstAnchor.id;
+
         /** @param {MouseEvent} e  */
         function handleMouseMove(e)
         {
             const moved = Camera.position();
-            moved.x -=pos.x;
-            moved.y -=pos.y;
+            moved.x -= pos.x;
+            moved.y -= pos.y;
 
-            endX = -startX +(-pos.x + e.clientX- moved.x)/moved.z;
-            endY = -startY +(-pos.y + e.clientY - moved.y)/moved.z;
-            // endX/=moved.z;
+            endX = -startX + (-pos.x + e.clientX - moved.x) / moved.z;
+            endY = -startY + (-pos.y + e.clientY - moved.y) / moved.z;
 
-            const mag = Math.sqrt(endX*endX+endY*endY);
-            
-            const angle = Math.atan2(endY,endX);
-            line.style.transform = `rotate(${angle}rad)`
-
-            line.style.width = `${mag}px`;
-            point2.style.transform = `translate(${endX}px, ${endY}px)`;
-            
+            Content.recalculateRelPos(newDiv, startX, startY, endX, endY);
         }
         /** @param {MouseEvent} e  */
         function handleMouseDown(e)
         {
-            if(e.button!==0) return;
-
+            if (e.button !== 0) return;
+            newDiv.style.display = "none";
+            const esNew = document.elementsFromPoint(e.clientX, e.clientY);
+            const eNew = esNew.find(element => element.id && !element.id.includes('rel'));
+            const secondAnchor = eNew.id ? eNew : eNew.parentElement;
+            newDiv.style.display = "";
+            console.log(eNew);
+            if (secondAnchor.id) {
+                newDiv.dataset.sa = secondAnchor.id;
+                if (!secondAnchor.dataset.secondAnchor)
+                    secondAnchor.dataset.secondAnchor = JSON.stringify([newDiv.id]);
+                else {
+                    const anchors = JSON.parse(secondAnchor.dataset.secondAnchor);
+                    secondAnchor.dataset.secondAnchor = JSON.stringify([...anchors, newDiv.id]);
+                }
+            }
             document.removeEventListener("mousemove", handleMouseMove);
             document.removeEventListener("mousedown", handleMouseDown);
         }
- 
+
+
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mousedown", handleMouseDown);
     }

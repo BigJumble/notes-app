@@ -1,4 +1,5 @@
-class Camera {
+class Camera
+{
     static x = window.innerWidth / 2;
     static y = window.innerHeight / 2;
     static z = 1;
@@ -10,51 +11,55 @@ class Camera {
     static cursorX = 0;
     static cursorY = 0;
 
-    static screenSVG;
-    static viewbox;
+    static isDragging = false;
 
     static {
-        this.screenSVG = document.getElementById("screenSVG");
-        this.viewbox = screenSVG.viewBox.baseVal;
         this.#onMouseDragEvent();
-        window.addEventListener('resize', () => { Camera.#recalculateViewBox(); });
-        Camera.#recalculateViewBox();
     }
 
-    static #recalculateViewBox() {
-        this.viewbox.x = -this.x;
-        this.viewbox.y = -this.y;
-        this.viewbox.width = window.innerWidth / this.z;
-        this.viewbox.height = window.innerHeight / this.z;
+    static position()
+    {
+        return { x: this.x, y: this.y, z: this.z };
     }
-
-
-    static #onMouseDragEvent() {
+    static setPosition({x,y,z})
+    {
+        this.x=x;
+        this.y=y;
+        this.z=z;
+        this.targetX=x;
+        this.targetY=y;
+        this.targetZ=z;
+    }
+    static #onMouseDragEvent()
+    {
         /** @param {MouseEvent} e */
-        const startDrag = (e) => {
+        const startDrag = (e) =>
+        {
             if (e.button !== 1) return; // middle click
             e.preventDefault();
 
             let oldX = e.clientX;
             let oldY = e.clientY;
-            Camera.isDragging = true;
+            this.isDragging = true;
 
             /** @param {MouseEvent} e2 */
-            const dragMove = (e2) => {
+            const dragMove = (e2) =>
+            {
                 e2.preventDefault();
 
-                Camera.targetX += (e2.clientX - oldX) / Camera.z;
-                Camera.targetY += (e2.clientY - oldY) / Camera.z;
+                this.targetX += e2.clientX - oldX;
+                this.targetY += e2.clientY - oldY;
                 oldX = e2.clientX;
                 oldY = e2.clientY;
 
-                Animator.update();
+                update(); // in main.js :D
             };
 
             /** @param {MouseEvent} e2 */
-            const endDrag = (e2) => {
+            const endDrag = (e2) =>
+            {
                 e2.preventDefault();
-                Camera.isDragging = false;
+                this.isDragging = false;
                 document.removeEventListener('mousemove', dragMove);
                 document.removeEventListener('mouseup', endDrag);
             };
@@ -65,30 +70,37 @@ class Camera {
         };
 
         /** @param {MouseEvent} e */
-        const mousePosition = (e) => {
-            Camera.cursorX = e.clientX;
-            Camera.cursorY = e.clientY;
+        const mousePosition = (e) =>
+        {
+            this.cursorX = e.clientX;
+            this.cursorY = e.clientY;
         };
 
         /** @param {MouseEvent} e */
-        const handleScroll = (e) => {
-            Camera.targetZ += e.deltaY > 0 ? -0.1 : 0.1;
-            Camera.targetZ = Math.max(0.3, Math.min(1, Camera.targetZ));
+        const handleScroll = (e) =>
+        {
+            if(!(e.target.contains(BackgroundGrid.canvas) || e.target.parentNode.id.includes("rel"))) return;
+            this.targetZ += e.deltaY > 0 ? -0.1 : 0.1;
+            this.targetZ = Math.max(0.3, Math.min(1, this.targetZ));
 
-            Animator.update();
+            update();
         };
         document.addEventListener('mousemove', mousePosition);
         document.addEventListener('wheel', handleScroll);
         document.addEventListener("mousedown", startDrag);
     }
 
+
+
     /**
      * @param {number} deltaTime last frame time taken.
      * @returns {boolean} is animation is completed.
      */
-    static doMoveAnimationStep(deltaTime) {
+    static doMoveAnimationStep(deltaTime)
+    {
         this.x = Helper.lerp(this.x, this.targetX, deltaTime);
         this.y = Helper.lerp(this.y, this.targetY, deltaTime);
+
 
         const oldz = this.z;
         this.z = Helper.lerp(this.z, this.targetZ, deltaTime);
@@ -101,23 +113,31 @@ class Camera {
             this.#zoomCorrection(this.z, this.targetZ);
             this.z = this.targetZ;
         }
-
-        this.#recalculateViewBox();
-    }
-
-    static #zoomCorrection(oldZ, newZ) {
-        const x = (window.innerWidth / newZ - window.innerWidth / oldZ) * (this.cursorX / window.innerWidth);
-        const y = (window.innerHeight / newZ - window.innerHeight / oldZ) * (this.cursorY / window.innerHeight);
-
-        this.targetX += x;
-        this.targetY += y;
-
-        this.x += x;
-        this.y += y;
     }
 
     /**@returns {boolean} is camera in target position*/
-    static isMoveAnimationFinished() {
+    static isMoveAnimationFinished()
+    {
         return (this.x === this.targetX && this.y === this.targetY && this.z === this.targetZ);
     }
+
+
+    static #zoomCorrection(oldZ, newZ)
+    {
+        const deltaZoom = newZ - oldZ;
+
+        this.targetX += (this.x - this.cursorX) / oldZ * deltaZoom;
+        this.targetY += (this.y - this.cursorY) / oldZ * deltaZoom;
+
+        this.x += (this.x - this.cursorX) / oldZ * deltaZoom;
+        this.y += (this.y - this.cursorY) / oldZ * deltaZoom;
+    }
+
+    static recenter()
+    {
+        this.targetX = window.innerWidth / 2;
+        this.targetY = window.innerHeight / 2;
+        update();
+    }
+
 }
