@@ -20,4 +20,8 @@ class Helper {
 
         return circle;
     }
+    static snap(value, size)
+    {
+        return Math.round(value/size) * size;
+    }
 }

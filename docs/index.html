@@ -16,11 +16,12 @@
     <script defer src="./helper.js"></script>
     <script defer src="./camera.js"></script>
     <script defer src="./animator.js"></script>
-    <script defer src="./loader.js"></script>
+    <script defer src="./elements.js"></script>
+    <script defer src="./contextMenu.js"></script>
 </head>
 
 <body>
-    <svg id="screenSVG" viewBox="0 0 100 100" style="transition: 10s;">
+    <svg id="screenSVG" viewBox="0 0 100 100" style="display: none;">
         <defs>
             <pattern id="gridPattern" width="0.003125" height="0.005">
                 <g id="plusPattern" style="display: none;">
@@ -32,13 +33,40 @@
                 </g>
             </pattern>
         </defs>
-        <circle cx="0" cy="0" r="10" fill="#444444" />
         <rect id="grid" width="16000" height="10000" x="-25" y="-25" fill="url(#gridPattern)" />
+
+        <g id="gridCover">
+
+        </g>
 
         <g id="content">
 
         </g>
 
+    </svg>
+
+    <svg id="contextMenu" viewBox="0 0 100 100" style="display: none;">
+        <g id="contextGroup">
+            <rect width="200" height="400" rx="20" ry="20" fill="#444444" />
+            <text x="100" y="35" class="text">Menu</text>
+            <g id="baseMenu">
+                <svg x="20" y="50" height="40" width="40" viewBox="0 -960 960 960" fill="#e8eaed" class="menuIcon" onclick="ContextMenu.createNote()">
+                    <title>Add Note</title>
+                    <rect y="-960" width="960" height="960" fill="transparent"></rect>
+                    <path d="M440-240h80v-120h120v-80H520v-120h-80v120H320v80h120v120ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z" />
+                </svg>
+                <svg x="80" y="50" height="40" width="40" viewBox="0 -960 960 960" fill="#e8eaed" class="menuIcon" onclick="ContextMenu.createDrawNote()">
+                    <title>Add Drawing Note</title>
+                    <rect y="-960" width="960" height="960" fill="transparent"></rect>
+                    <path d="M160-120v-170l527-526q12-12 27-18t30-6q16 0 30.5 6t25.5 18l56 56q12 11 18 25.5t6 30.5q0 15-6 30t-18 27L330-120H160Zm80-80h56l393-392-28-29-29-28-392 393v56Zm560-503-57-57 57 57Zm-139 82-29-28 57 57-28-29ZM560-120q74 0 137-37t63-103q0-36-19-62t-51-45l-59 59q23 10 36 22t13 26q0 23-36.5 41.5T560-200q-17 0-28.5 11.5T520-160q0 17 11.5 28.5T560-120ZM183-426l60-60q-20-8-31.5-16.5T200-520q0-12 18-24t76-37q88-38 117-69t29-70q0-55-44-87.5T280-840q-45 0-80.5 16T145-785q-11 13-9 29t15 26q13 11 29 9t27-13q14-14 31-20t42-6q41 0 60.5 12t19.5 28q0 14-17.5 25.5T262-654q-80 35-111 63.5T120-520q0 32 17 54.5t46 39.5Z" />
+                </svg>
+                <svg x="140" y="50" height="40" width="40" viewBox="0 -960 960 960" fill="#e8eaed" class="menuIcon" onclick="Camera.recenterView()">
+                    <title>Recenter View</title>
+                    <rect y="-960" width="960" height="960" fill="transparent"></rect>
+                    <path d="M440-40v-167l-44 43-56-56 140-140 140 140-56 56-44-43v167h-80ZM220-340l-56-56 43-44H40v-80h167l-43-44 56-56 140 140-140 140Zm520 0L600-480l140-140 56 56-43 44h167v80H753l43 44-56 56Zm-260-80q-25 0-42.5-17.5T420-480q0-25 17.5-42.5T480-540q25 0 42.5 17.5T540-480q0 25-17.5 42.5T480-420Zm0-180L340-740l56-56 44 43v-167h80v167l44-43 56 56-140 140Z" />
+                </svg>
+            </g>
+        </g>
     </svg>
 </body>
 

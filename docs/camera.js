@@ -15,10 +15,11 @@ class Camera {
 
     static {
         this.screenSVG = document.getElementById("screenSVG");
-        this.viewbox = screenSVG.viewBox.baseVal;
+        this.viewbox = this.screenSVG.viewBox.baseVal;
         this.#onMouseDragEvent();
         window.addEventListener('resize', () => { Camera.#recalculateViewBox(); });
         Camera.#recalculateViewBox();
+        this.screenSVG.style.display = "block";
     }
 
     static #recalculateViewBox() {
@@ -26,6 +27,14 @@ class Camera {
         this.viewbox.y = -this.y;
         this.viewbox.width = window.innerWidth / this.z;
         this.viewbox.height = window.innerHeight / this.z;
+    }
+
+    static recenterView() {
+        ContextMenu.close();
+        Camera.targetX = window.innerWidth / 2 / Camera.z;
+        Camera.targetY = window.innerHeight / 2 / Camera.z;
+        Animator.update();
+
     }
 
 
@@ -73,7 +82,7 @@ class Camera {
         /** @param {MouseEvent} e */
         const handleScroll = (e) => {
             Camera.targetZ += e.deltaY > 0 ? -0.1 : 0.1;
-            Camera.targetZ = Math.max(0.3, Math.min(1, Camera.targetZ));
+            Camera.targetZ = Math.max(0.4, Math.min(1, Camera.targetZ));
 
             Animator.update();
         };
@@ -120,4 +129,14 @@ class Camera {
     static isMoveAnimationFinished() {
         return (this.x === this.targetX && this.y === this.targetY && this.z === this.targetZ);
     }
+
+
+    static screenToGlobalPosition(x = Camera.cursorX, y = Camera.cursorY) {
+
+        return { x: x / Camera.z - Camera.x, y: y / Camera.z - Camera.y };
+    }
+    // static globalToScreenPosition(x, y) {
+    //     return {x, y}
+
+    // }
 }

@@ -14,7 +14,40 @@ body {
 .text {
     font-family: "Nunito", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 400;
+    font-weight: bold;
     font-style: normal;
-    color: rgb(255, 255, 255);
+    fill: rgb(255, 255, 255);
+    text-anchor:middle;
+    font-size: 20px;
+
+}
+
+#contextMenu{
+    position: absolute;
+    top:0;
+    left:0;
+}
+
+.menuIcon{
+    background: white;
+}
+
+.menuIcon path{
+    transition: fill 0.1s ease, transform 0.05s ease;
+    transform-origin: center -480px;
+}
+
+.menuIcon:hover path{
+
+    transition: fill 0.1s ease;
+    fill:rgb(0, 0, 0);
+
+    
+}
+
+.menuIcon:active path{
+
+    transition: fill 0.1s ease, transform 0.05s ease;
+    transform: scale(0.95);
+
 }

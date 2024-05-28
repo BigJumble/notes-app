@@ -22,8 +22,9 @@ class Animator {
         Animator.deltaTime = (timestamp - Animator.lastTimestamp) / 1000;
         Animator.lastTimestamp = timestamp;
 
+
         Camera.doMoveAnimationStep(Animator.deltaTime * Animator.moveSpeed);
-        Loader.gridPosition(Camera.x, Camera.y);
+        Elements.gridPosition(Camera.x, Camera.y);
         if (Camera.isMoveAnimationFinished()) {
             Animator.isUpdating = false;
             return;
