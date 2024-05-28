@@ -25,14 +25,17 @@ class Animator {
 
         Camera.doMoveAnimationStep(Animator.deltaTime * Animator.moveSpeed);
         Elements.gridPosition(Camera.x, Camera.y);
+        Animator.FPSCounter++;
+
+
+
+        Elements.hideOffscreen();
+
+
         if (Camera.isMoveAnimationFinished()) {
             Animator.isUpdating = false;
             return;
         }
-
-        Animator.FPSCounter++;
-
-
         requestAnimationFrame(Animator.#smoothUpdate);
     }
 }

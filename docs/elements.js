@@ -6,6 +6,7 @@ class Elements {
     static dotPattern;
     static plusPattern;
 
+    /**@type {Widget[]}*/
     static listOfWidgets = [];
 
     static {
@@ -20,13 +21,14 @@ class Elements {
 
         this.contentGroup.addEventListener("mousedown", (e) => { console.log(e); });
 
-        setTimeout(()=>{
-            for (let i = 0; i < 15; i++) {
-                for (let a = 0; a < 15; a++) {
-                    Elements.createNote({x:i*350,y:a*250})
+        setTimeout(() => {
+            for (let i = 0; i < 20; i++) {
+                for (let a = 0; a < 20; a++) {
+                    Elements.createNote({ x: i * 550, y: a * 450 });
                 }
             }
-        },100)
+            Elements.hideOffscreen();
+        }, 100);
 
     }
 
@@ -51,5 +53,20 @@ class Elements {
     static createNote(pos) {
         const obj = new Widget(WidgetTypes.Note, pos);
         Elements.listOfWidgets.push(obj);
+    }
+
+    static hideOffscreen() {
+        let bbox;
+        const camx1 = -Camera.x + window.innerWidth / Camera.z;
+        const camy1 = -Camera.y + window.innerHeight / Camera.z;
+        for (let i = 0; i < this.listOfWidgets.length; i++) {
+            bbox = this.listOfWidgets[i].getCoverBBox();
+            if (-Camera.x < bbox.cx1 && -Camera.y < bbox.cy1 && camx1 > bbox.cx0 && camy1 > bbox.cy0) {
+                this.listOfWidgets[i].group.style.display = "block";
+            }
+            else {
+                this.listOfWidgets[i].group.style.display = "none";
+            }
+        }
     }
 }
