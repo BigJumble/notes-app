@@ -81,6 +81,7 @@ class Camera {
 
         /** @param {MouseEvent} e */
         const handleScroll = (e) => {
+            if(e.target.localName === "textarea") return;
             Camera.targetZ += e.deltaY > 0 ? -0.1 : 0.1;
             Camera.targetZ = Math.max(0.4, Math.min(1, Camera.targetZ));
 
