@@ -22,6 +22,6 @@ class Helper {
     }
     static snap(value, size)
     {
-        return Math.round(value/size) * size;
+        return Math.floor(value/size) * size;
     }
 }
