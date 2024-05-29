@@ -41,7 +41,7 @@ class Camera {
     static #onMouseDragEvent() {
         /** @param {MouseEvent} e */
         const startDrag = (e) => {
-            if (e.button !== 0 && e.button !== 1) return; // left | middle click
+            if ( e.button !== 1) return; // left | middle click
             e.preventDefault();
 
             let oldX = e.clientX;
@@ -51,7 +51,8 @@ class Camera {
             /** @param {MouseEvent} e2 */
             const dragMove = (e2) => {
                 e2.preventDefault();
-
+                const type=e2.target.dataset.type;
+                if(type === "mover" || type?.includes("resizer")) return;
                 Camera.targetX += (e2.clientX - oldX) / Camera.z;
                 Camera.targetY += (e2.clientY - oldY) / Camera.z;
                 oldX = e2.clientX;
@@ -81,7 +82,7 @@ class Camera {
 
         /** @param {MouseEvent} e */
         const handleScroll = (e) => {
-            if(e.target.localName === "textarea") return;
+            if(e.target.dataset.type === "text") return;
             Camera.targetZ += e.deltaY > 0 ? -0.1 : 0.1;
             Camera.targetZ = Math.max(0.4, Math.min(1, Camera.targetZ));
 

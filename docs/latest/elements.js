@@ -31,14 +31,36 @@ class Elements {
 
         this.gridPosition(Camera.x, Camera.y);
 
+        document.addEventListener("mousedown", Elements.userSelectHandler);
+
         setTimeout(() => {
-            for (let i = 0; i < 20; i++) {
-                for (let a = 0; a < 20; a++) {
+            for (let i = 0; i < 10; i++) {
+                for (let a = 0; a < 10; a++) {
                     Elements.createNote({ x: i * 550, y: a * 450 });
                 }
             }
             Elements.hideOffscreen();
         }, 100);
+
+    }
+
+    static userSelectID;
+    /** @param {MouseEvent} e */
+    static userSelectHandler(e) {
+        // if(e.button !== 0) return;
+
+        if ( !!Elements.userSelectID && (!!e.target.dataset.id || Elements.userSelectID !== e.target.dataset.id))
+            {
+                window.getSelection().removeAllRanges();
+                Elements.listOfWidgets[Elements.userSelectID].p.style.userSelect = 'none';
+                Elements.userSelectID = undefined;
+            }
+        if (!!e.target.dataset.id) {
+            if (e.target.dataset.type === "text" || e.target.dataset.type === "background") {
+                Elements.userSelectID = e.target.dataset.id;
+                Elements.listOfWidgets[Elements.userSelectID].p.style.userSelect = 'auto';
+            }
+        }
 
     }
 
@@ -93,8 +115,7 @@ class Elements {
         ContextMenu.close();
     }
 
-    static moveResize(id)
-    {
+    static moveResize(id) {
         ContextMenu.close();
         this.listOfWidgets[id].transform();
     }
