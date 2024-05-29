@@ -42,7 +42,7 @@ class Widget {
 
         this.foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
         this.foreignObject.setAttribute('data-id', id);
-        
+
 
         this.p = document.createElement('p');
         this.p.setAttribute('data-type', 'text');
@@ -133,9 +133,9 @@ class Widget {
         this.cover.setAttribute('y', this.cy0);
 
         this.foreignObject.setAttribute('width', this.x1 - this.x0);
-        this.foreignObject.setAttribute('height', this.y1 - this.y0 );
+        this.foreignObject.setAttribute('height', this.y1 - this.y0);
         this.foreignObject.setAttribute('x', this.x0);
-        this.foreignObject.setAttribute('y', this.y0 );
+        this.foreignObject.setAttribute('y', this.y0);
 
         this.mover.setAttribute('width', this.x1 - this.x0);
         this.mover.setAttribute('height', this.y1 - this.y0);
@@ -171,8 +171,8 @@ class Widget {
         let oldY = e.clientY;
         /** @param {MouseEvent} e2 */
         function onMove(e2) {
-            let deltaX = (e2.clientX - oldX)/Camera.z;
-            let deltaY = (e2.clientY - oldY)/Camera.z;
+            let deltaX = (e2.clientX - oldX) / Camera.z;
+            let deltaY = (e2.clientY - oldY) / Camera.z;
             oldX = e2.clientX;
             oldY = e2.clientY;
             switch (e.target.dataset.type) {

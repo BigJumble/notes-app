@@ -47,14 +47,11 @@ class Elements {
     static userSelectID;
     /** @param {MouseEvent} e */
     static userSelectHandler(e) {
-        // if(e.button !== 0) return;
-
-        if ( !!Elements.userSelectID && (!!e.target.dataset.id || Elements.userSelectID !== e.target.dataset.id))
-            {
-                window.getSelection().removeAllRanges();
-                Elements.listOfWidgets[Elements.userSelectID].p.style.userSelect = 'none';
-                Elements.userSelectID = undefined;
-            }
+        if (!!Elements.userSelectID && (!!e.target.dataset.id || Elements.userSelectID !== e.target.dataset.id)) {
+            window.getSelection().removeAllRanges();
+            Elements.listOfWidgets[Elements.userSelectID].p.style.userSelect = 'none';
+            Elements.userSelectID = undefined;
+        }
         if (!!e.target.dataset.id) {
             if (e.target.dataset.type === "text" || e.target.dataset.type === "background") {
                 Elements.userSelectID = e.target.dataset.id;
