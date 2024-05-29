@@ -46,7 +46,8 @@ class Camera {
             let oldX = e.clientX;
             let oldY = e.clientY;
             Camera.isDragging = true;
-            const type = e.target.dataset.type;
+            const type = e.button===0? e.target.dataset.type : '';
+
             /** @param {MouseEvent} e2 */
             const dragMove = (e2) => {
                 e2.preventDefault();
