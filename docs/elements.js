@@ -7,11 +7,23 @@ class Elements {
     static plusPattern;
 
     /**@type {Widget[]}*/
-    static listOfWidgets = [];
+    static listOfWidgets = {};
+
+    static availableId() {
+        let lastKey = -1;
+        for (let key in this.listOfWidgets) {
+            if (lastKey + 1 !== Number(key)) {
+                return key;
+            }
+            lastKey = Number(key);
+        }
+        
+        return Object.keys(this.listOfWidgets).length;
+    }
 
     static {
         this.dotGrid = document.getElementById("grid");
-        this.gridCoverGroup = document.getElementById("gridCover");
+        this.gridCoverGroup = document.getElementById("cover");
         this.contentGroup = document.getElementById("content");
 
         this.dotPattern = document.getElementById("dotPattern");
@@ -19,7 +31,7 @@ class Elements {
 
         this.gridPosition(Camera.x, Camera.y);
 
-        this.contentGroup.addEventListener("mousedown", (e) => { console.log(e); });
+        // this.contentGroup.addEventListener("mousedown", (e) => { console.log(e); });
 
         setTimeout(() => {
             for (let i = 0; i < 20; i++) {
@@ -51,8 +63,9 @@ class Elements {
     }
 
     static createNote(pos) {
-        const obj = new Widget(WidgetTypes.Note, pos);
-        Elements.listOfWidgets.push(obj);
+        const id = Elements.availableId();
+        const obj = new Widget(WidgetTypes.Note, pos, id);
+        Elements.listOfWidgets[id] = obj;
     }
 
     static hideOffscreen() {
@@ -148,7 +161,7 @@ class Elements {
                 this.styleSheet.cssRules[3].style.fill = "white";
                 this.styleSheet.cssRules[4].style.fill = "rgb(6, 178, 0)";
                 this.styleSheet.cssRules[4].style.color = "#white";
-               
+
             }
         }
     }

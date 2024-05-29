@@ -9,23 +9,22 @@ class Widget {
      * 
      * @param {WidgetTypes} widgetType
      */
-    constructor(widgetType,pos) {
+    constructor(widgetType, pos, id) {
         if (widgetType === "note") {
-            this.createNote(pos)
+            this.createNote(pos, id);
         }
     }
 
-    createNote({x,y})
-    {
-        this.cx0 = Helper.snap(x, 50)-25;
-        this.cx1 = Helper.snap(x, 50)-25 + 350;
-        this.cy0 = Helper.snap(y, 50)-25;
-        this.cy1 = Helper.snap(y, 50)-25 + 250;
+    createNote({ x, y }, id) {
+        this.cx0 = Helper.snap(x, 50) - 25;
+        this.cx1 = Helper.snap(x, 50) - 25 + 350;
+        this.cy0 = Helper.snap(y, 50) - 25;
+        this.cy1 = Helper.snap(y, 50) - 25 + 250;
 
         this.group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        this.group.setAttribute("id", Elements.listOfWidgets.length);
+        this.group.setAttribute("id", id);
 
-        this.rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        this.rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         this.rect.setAttribute('width', 300);
         this.rect.setAttribute('height', 200);
         this.rect.setAttribute('x', Helper.snap(x, 50));
@@ -33,32 +32,31 @@ class Widget {
         this.rect.setAttribute('data-type', 'background');
         this.rect.setAttribute('class', 'dynamicPattern4');
 
-        this.cover = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        this.cover = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         this.cover.setAttribute('width', 350);
         this.cover.setAttribute('height', 250);
-        this.cover.setAttribute('x', Helper.snap(x, 50)-25);
-        this.cover.setAttribute('y', Helper.snap(y, 50)-25);
+        this.cover.setAttribute('x', Helper.snap(x, 50) - 25);
+        this.cover.setAttribute('y', Helper.snap(y, 50) - 25);
         this.cover.setAttribute('data-type', 'cover');
         this.cover.setAttribute('class', 'dynamicPattern3');
 
         this.foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
         this.foreignObject.setAttribute('width', 250);
         this.foreignObject.setAttribute('height', 150);
-        this.foreignObject.setAttribute('x', Helper.snap(x, 50)+25);
-        this.foreignObject.setAttribute('y', Helper.snap(y, 50)+25);
+        this.foreignObject.setAttribute('x', Helper.snap(x, 50) + 25);
+        this.foreignObject.setAttribute('y', Helper.snap(y, 50) + 25);
 
         this.text = document.createElement('textarea');
         this.text.setAttribute('data-type', 'text');
-        this.text.classList.add("textarea")
-        this.text.classList.add("dynamicPattern4")
+        this.text.setAttribute('readonly','');
+        this.text.classList.add("textarea");
+        this.text.classList.add("dynamicPattern4");
         this.text.textContent = "Sample Text Sample Text1 Sample Text Sample Text2 Sample Text Sample Text3 Sample Text Sample Text4 Sample Text Sample Text5";
 
-
-        this.group.appendChild(this.cover);
         this.group.appendChild(this.rect);
         this.foreignObject.appendChild(this.text);
         this.group.appendChild(this.foreignObject);
-
+        Elements.gridCoverGroup.appendChild(this.cover);
         Elements.contentGroup.appendChild(this.group);
     }
 
@@ -71,9 +69,8 @@ class Widget {
      * - `cy0`: The start y-coordinate.
      * - `cy1`: The end y-coordinate.
      */
-    getCoverBBox()
-    {
-        return {cx0:this.cx0,cx1:this.cx1,cy0:this.cy0,cy1:this.cy1}
+    getCoverBBox() {
+        return { cx0: this.cx0, cx1: this.cx1, cy0: this.cy0, cy1: this.cy1 };
     }
 
 }
