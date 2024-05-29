@@ -6,18 +6,18 @@ class Elements {
     static dotPattern;
     static plusPattern;
 
-    /**@type {Widget[]}*/
+    /**@type {Object<string, Widget>}*/
     static listOfWidgets = {};
 
     static availableId() {
         let lastKey = -1;
         for (let key in this.listOfWidgets) {
             if (lastKey + 1 !== Number(key)) {
-                return key;
+                return lastKey + 1;
             }
             lastKey = Number(key);
         }
-        
+
         return Object.keys(this.listOfWidgets).length;
     }
 
@@ -30,8 +30,6 @@ class Elements {
         this.plusPattern = document.getElementById("plusPattern");
 
         this.gridPosition(Camera.x, Camera.y);
-
-        // this.contentGroup.addEventListener("mousedown", (e) => { console.log(e); });
 
         setTimeout(() => {
             for (let i = 0; i < 20; i++) {
@@ -83,9 +81,26 @@ class Elements {
         }
     }
 
+    static editText(id) {
+        ContextMenu.close();
+        this.listOfWidgets[id].editText();
+    }
+
+
+    static deleteNote(id) {
+        this.listOfWidgets[id].delete();
+        delete this.listOfWidgets[id];
+        ContextMenu.close();
+    }
+
+    static moveResize(id)
+    {
+        ContextMenu.close();
+        this.listOfWidgets[id].transform();
+    }
+
     static themeMode = "dark";
     static theme = 'warm';
-
     static styleSheet = document.getElementById("dynamicCSS").sheet;
     static setMode(mode) {
         this.themeMode = mode;

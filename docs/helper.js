@@ -24,4 +24,8 @@ class Helper {
     {
         return Math.floor(value/size) * size;
     }
+    static snapRound(value, size)
+    {
+        return Math.round(value/size) * size;
+    }
 }
