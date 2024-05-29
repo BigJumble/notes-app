@@ -41,7 +41,7 @@ class Camera {
     static #onMouseDragEvent() {
         /** @param {MouseEvent} e */
         const startDrag = (e) => {
-            if (e.button !== 1) return; // middle click
+            if (e.button !== 0 && e.button !== 1) return; // left | middle click
             e.preventDefault();
 
             let oldX = e.clientX;
