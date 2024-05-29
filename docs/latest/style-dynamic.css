@@ -1,20 +1,25 @@
 body {
+    will-change: background-color;
     background-color: black;
     transition: background-color 0.2s ease-in-out;
 }
 .dynamicPattern {
+    will-change: fill;
     fill: white;
     transition: fill 0.2s ease-in-out;
 }
 .dynamicPattern2 {
+    will-change: stroke;
     stroke: white;
     transition: stroke 0.2s ease-in-out;
 }
 .dynamicPattern3 {
+    will-change: fill;
     fill: black;
     transition: fill 0.2s ease-in-out;
 }
 .dynamicPattern4 {
+    will-change: fill, color;
     fill: white;
     color: black;
     transition: fill 0.2s ease-in-out, color 0.2s ease-in-out;

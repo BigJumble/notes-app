@@ -28,6 +28,7 @@ class Widget {
 
         this.group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         this.group.setAttribute("id", id);
+        this.group.setAttribute('data-type', 'content');
 
         this.rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         this.rect.setAttribute('data-type', 'background');
@@ -41,18 +42,27 @@ class Widget {
 
         this.foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
         this.foreignObject.setAttribute('data-id', id);
+        
+
+        this.p = document.createElement('p');
+        this.p.setAttribute('data-type', 'text');
+        this.p.setAttribute('data-id', id);
+        this.p.classList.add("textarea");
+        this.p.classList.add("dynamicPattern4");
+        this.p.style.display = 'block';
+        this.p.textContent = "Sample Text Sample Text1 Sample Text Sample Text2 Sample Text Sample Text3 Sample Text Sample Text4 Sample Text Sample Text5";
 
         this.text = document.createElement('textarea');
         this.text.setAttribute('data-type', 'text');
-        this.text.setAttribute('readonly', '');
         this.text.setAttribute('data-id', id);
         this.text.setAttribute('placeholder', "Type something...");
         this.text.classList.add("textarea");
+        this.text.style.display = 'none';
         this.text.classList.add("dynamicPattern4");
         this.text.textContent = "Sample Text Sample Text1 Sample Text Sample Text2 Sample Text Sample Text3 Sample Text Sample Text4 Sample Text Sample Text5";
 
         this.group2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        this.group2.setAttribute("id", id);
+        this.group2.setAttribute('data-type', 'transform');
 
         this.mover = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         this.mover.setAttribute('data-type', 'mover');
@@ -97,6 +107,7 @@ class Widget {
         this.updateTransform();
 
         this.group.appendChild(this.rect);
+        this.foreignObject.appendChild(this.p);
         this.foreignObject.appendChild(this.text);
         this.group.appendChild(this.foreignObject);
 
@@ -121,10 +132,10 @@ class Widget {
         this.cover.setAttribute('x', this.cx0);
         this.cover.setAttribute('y', this.cy0);
 
-        this.foreignObject.setAttribute('width', this.x1 - this.x0 - 50);
-        this.foreignObject.setAttribute('height', this.y1 - this.y0 - 50);
-        this.foreignObject.setAttribute('x', this.x0 + 25);
-        this.foreignObject.setAttribute('y', this.y0 + 25);
+        this.foreignObject.setAttribute('width', this.x1 - this.x0);
+        this.foreignObject.setAttribute('height', this.y1 - this.y0 );
+        this.foreignObject.setAttribute('x', this.x0);
+        this.foreignObject.setAttribute('y', this.y0 );
 
         this.mover.setAttribute('width', this.x1 - this.x0);
         this.mover.setAttribute('height', this.y1 - this.y0);
@@ -147,8 +158,8 @@ class Widget {
     transform() {
         this.group2.style.display = "block";
         const listener = (e) => this.translate(e, listener, this);
-        this.text.setAttribute("disabled",'');
-        this.text.setAttribute("draggable",'false');
+        // this.text.setAttribute("disabled",'');
+        // this.text.setAttribute("draggable",'false');
         document.addEventListener("mousedown", listener);
 
     }
@@ -160,8 +171,8 @@ class Widget {
         let oldY = e.clientY;
         /** @param {MouseEvent} e2 */
         function onMove(e2) {
-            let deltaX = e2.clientX - oldX;
-            let deltaY = e2.clientY - oldY;
+            let deltaX = (e2.clientX - oldX)/Camera.z;
+            let deltaY = (e2.clientY - oldY)/Camera.z;
             oldX = e2.clientX;
             oldY = e2.clientY;
             switch (e.target.dataset.type) {
@@ -225,8 +236,8 @@ class Widget {
 
         }
         else {
-            me.text.removeAttribute("disabled");
-            me.text.removeAttribute("draggable",'true');
+            // me.text.removeAttribute("disabled");
+            // me.text.removeAttribute("draggable",'true');
             me.group2.style.display = "none";
             document.removeEventListener("mousedown", listener);
         }
@@ -247,12 +258,16 @@ class Widget {
 
     stopEditingText(e, listener) {
         if (!this.group.contains(e.target)) {
-            this.text.setAttribute('readonly', '');
+            this.p.style.display = 'block';
+            this.p.innerText = this.text.value;
+            this.text.style.display = 'none';
+
             document.removeEventListener("mousedown", listener);
         }
     }
     editText() {
-        this.text.removeAttribute('readonly');
+        this.text.style.display = 'block';
+        this.p.style.display = 'none';
         const listener = (e) => this.stopEditingText(e, listener);
         document.addEventListener("mousedown", listener);
     }
