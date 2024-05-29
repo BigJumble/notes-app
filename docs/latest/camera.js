@@ -87,7 +87,6 @@ class Camera {
             else {
                 Camera.targetZ += e.deltaY / 300;
             }
-            console.log(e.deltaY);
             Camera.targetZ = Math.max(0.25, Math.min(1, Camera.targetZ));
 
             Animator.update();
