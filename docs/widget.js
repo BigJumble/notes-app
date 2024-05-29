@@ -30,16 +30,16 @@ class Widget {
         this.rect.setAttribute('height', 200);
         this.rect.setAttribute('x', Helper.snap(x, 50));
         this.rect.setAttribute('y', Helper.snap(y, 50));
-        this.rect.setAttribute('fill', 'blue');
-        this.rect.setAttribute('data-type', 'background'); 
+        this.rect.setAttribute('data-type', 'background');
+        this.rect.setAttribute('class', 'dynamicPattern4');
 
         this.cover = document.createElementNS('http://www.w3.org/2000/svg','rect');
         this.cover.setAttribute('width', 350);
         this.cover.setAttribute('height', 250);
         this.cover.setAttribute('x', Helper.snap(x, 50)-25);
         this.cover.setAttribute('y', Helper.snap(y, 50)-25);
-        this.cover.setAttribute('fill', 'black');
         this.cover.setAttribute('data-type', 'cover');
+        this.cover.setAttribute('class', 'dynamicPattern3');
 
         this.foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
         this.foreignObject.setAttribute('width', 250);
@@ -50,6 +50,7 @@ class Widget {
         this.text = document.createElement('textarea');
         this.text.setAttribute('data-type', 'text');
         this.text.classList.add("textarea")
+        this.text.classList.add("dynamicPattern4")
         this.text.textContent = "Sample Text Sample Text1 Sample Text Sample Text2 Sample Text Sample Text3 Sample Text Sample Text4 Sample Text Sample Text5";
 
 

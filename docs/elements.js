@@ -69,4 +69,87 @@ class Elements {
             }
         }
     }
+
+    static themeMode = "dark";
+    static theme = 'warm';
+
+    static styleSheet = document.getElementById("dynamicCSS").sheet;
+    static setMode(mode) {
+        this.themeMode = mode;
+        if (this.themeMode === "dark") {
+            this.styleSheet.cssRules[0].style.backgroundColor = "#000000";
+            this.styleSheet.cssRules[1].style.fill = "#ffffff";
+            this.styleSheet.cssRules[2].style.stroke = "#ffffff";
+            this.styleSheet.cssRules[3].style.fill = "#000000";
+            this.styleSheet.cssRules[4].style.fill = "#ffffff";
+            this.styleSheet.cssRules[4].style.color = "#000000";
+        }
+        else if (this.themeMode === "light") {
+            this.styleSheet.cssRules[0].style.backgroundColor = "#ffffff";
+            this.styleSheet.cssRules[1].style.fill = "#000000";
+            this.styleSheet.cssRules[2].style.stroke = "#000000";
+            this.styleSheet.cssRules[3].style.fill = "#ffffff";
+            this.styleSheet.cssRules[4].style.fill = "#000000";
+            this.styleSheet.cssRules[4].style.color = "#ffffff";
+        }
+    }
+
+    static setTheme(_theme) {
+        this.theme = _theme;
+        if (this.themeMode === "dark") {
+            if (this.theme === "warm") {
+                this.styleSheet.cssRules[0].style.backgroundColor = "#0b0100";
+                this.styleSheet.cssRules[1].style.fill = "rgb(255, 167, 0)";
+                this.styleSheet.cssRules[2].style.stroke = "rgb(255, 167, 0)";
+                this.styleSheet.cssRules[3].style.fill = "#0b0100";
+                this.styleSheet.cssRules[4].style.fill = "rgb(255, 167, 0)";
+                this.styleSheet.cssRules[4].style.color = "#0b0100";
+
+            }
+            else if (this.theme === "cool") {
+                this.styleSheet.cssRules[0].style.backgroundColor = "#00050b";
+                this.styleSheet.cssRules[1].style.fill = "rgb(0, 110, 228)";
+                this.styleSheet.cssRules[2].style.stroke = "rgb(0, 110, 228)";
+                this.styleSheet.cssRules[3].style.fill = "#00050b";
+                this.styleSheet.cssRules[4].style.fill = "rgb(0, 110, 228)";
+                this.styleSheet.cssRules[4].style.color = "#00050b";
+            }
+            else if (this.theme === "wind") {
+                this.styleSheet.cssRules[0].style.backgroundColor = "#020b00";
+                this.styleSheet.cssRules[1].style.fill = "rgb(0, 213, 64)";
+                this.styleSheet.cssRules[2].style.stroke = "rgb(0, 213, 64)";
+                this.styleSheet.cssRules[3].style.fill = "#020b00";
+                this.styleSheet.cssRules[4].style.fill = "rgb(0, 213, 64)";
+                this.styleSheet.cssRules[4].style.color = "#020b00";
+
+            }
+        }
+        else {
+            if (this.theme === "warm") {
+                this.styleSheet.cssRules[0].style.backgroundColor = "white";
+                this.styleSheet.cssRules[1].style.fill = "#ff8300";
+                this.styleSheet.cssRules[2].style.stroke = "#ff8300";
+                this.styleSheet.cssRules[3].style.fill = "white";
+                this.styleSheet.cssRules[4].style.fill = "#ff8300";
+                this.styleSheet.cssRules[4].style.color = "#white";
+            }
+            else if (this.theme === "cool") {
+                this.styleSheet.cssRules[0].style.backgroundColor = "white";
+                this.styleSheet.cssRules[1].style.fill = "rgb(0, 147, 255)";
+                this.styleSheet.cssRules[2].style.stroke = "rgb(0, 147, 255)";
+                this.styleSheet.cssRules[3].style.fill = "white";
+                this.styleSheet.cssRules[4].style.fill = "rgb(0, 147, 255)";
+                this.styleSheet.cssRules[4].style.color = "#white";
+            }
+            else if (this.theme === "wind") {
+                this.styleSheet.cssRules[0].style.backgroundColor = "white";
+                this.styleSheet.cssRules[1].style.fill = "rgb(6, 178, 0)";
+                this.styleSheet.cssRules[2].style.stroke = "rgb(6, 178, 0)";
+                this.styleSheet.cssRules[3].style.fill = "white";
+                this.styleSheet.cssRules[4].style.fill = "rgb(6, 178, 0)";
+                this.styleSheet.cssRules[4].style.color = "#white";
+               
+            }
+        }
+    }
 }

@@ -34,7 +34,7 @@ class ContextMenu {
     static recalculateViewBox() {
         this.viewBox.width = window.innerWidth;
         this.viewBox.height = window.innerHeight;
-
+        Elements.hideOffscreen();
     }
 
     static createNote() {
