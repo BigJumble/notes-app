@@ -7,3 +7,7 @@
 
 ## Dependencies
 - https://github.com/mdbassit/Coloris
+
+## Todo
+- [ ] context menu always opens in window
+- [ ] same with color picker

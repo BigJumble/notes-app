@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Develop</title>
+  <!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+
+  <link rel="manifest" href="/manifest.json">
+
+
+ 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta id="themeColor" name="theme-color" content="#00000000">
+  <meta id="theme2Color" name="background_color" content="#00000000">
+
+  <link rel="stylesheet" href="coloris.css"/>
+
+  <link id="stylesheet" rel="stylesheet" href="style.css">
+  <link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+    rel="stylesheet">
+
+
+</head>
+
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div id="menu">
+    <div id="menuColors">
+      <h3 draggable="false" id="menuSelTheme">Select theme</h3>
+      <input draggable="false" type="text" data-coloris class="col" id="colorPicker" value="#a578f7">
+      <input draggable="false" type="text" data-coloris class="col" id="colorPicker2" value="#04000a">
+      <input draggable="false" type="text" data-coloris class="col" id="colorPicker3" value="#ffffff">
+      <!-- <input draggable="false" type="color" class="colorPicker" id="colorPicker2" value="#04000Aff">
+      <input draggable="false" type="color" class="colorPicker" id="colorPicker3" value="#ffffffff"> -->
+    </div>
+    <div class="menuNote">
+      <h3 class="menuTxt" onclick="makeNote()">New Note</h3>
+    </div>
+    <div class="menuNote">
+      <h3 class="menuTxt" onclick="makeCanvas()">New Canvas</h3>
+    </div>
+    <div class="menuNote">
+      <h3 class="menuTxt" onclick="recenter()">Recenter</h3>
+    </div>
+  </div>
+
+  <div id="settings">
+    <div id="settingHitbox"></div>
+    <span draggable="false" class="settingButton material-symbols-outlined c1 c3" id="dragpan">drag_pan</span>
+    <span draggable="false" class="settingButton material-symbols-outlined c1 c3" onclick="colorElement()">palette</span>
+    <span draggable="false" class="settingButton material-symbols-outlined c1 c3" onclick="deleteElement()">delete</span>
+
+    <input draggable="false" type="text" data-coloris class="col c2" id="colorPicker4" value="#a578f7">
+    <input draggable="false" type="text" data-coloris class="col c2" id="colorPicker5" value="#04000a">
+    <input draggable="false" type="text" data-coloris class="col c2" id="colorPicker6" value="#ffffff">
+    <!-- <input draggable="false" type="color" class="colorPicker c2" id="colorPicker4" value="#A578F7">
+    <input draggable="false" type="color" class="colorPicker c2" id="colorPicker5" value="#04000A">
+    <input draggable="false" type="color" class="colorPicker c2" id="colorPicker6" value="#ffffff"> -->
+
+  </div>
+  <div id="settings2">
+    <div id="setting2Hitbox"></div>
+    <span draggable="false" class="resizeIcon material-symbols-outlined c3">width</span>
+  </div>
+
+
+  <script src="coloris.js"></script>
+  <script src="main.js"></script>
+  <script src="functions.js"></script>
+  <script src="events.js"></script>
+  <script src="refresh.js"></script>
+</body>
+
+</html>
