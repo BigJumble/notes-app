@@ -41,18 +41,18 @@ class Camera {
     static #onMouseDragEvent() {
         /** @param {MouseEvent} e */
         const startDrag = (e) => {
-            if ( e.button !== 1) return; // left | middle click
-            e.preventDefault();
+            if (e.button !== 0 && e.button !== 1) return; // left | middle click
 
             let oldX = e.clientX;
             let oldY = e.clientY;
             Camera.isDragging = true;
+            const type = e.button===0? e.target.dataset.type : '';
 
             /** @param {MouseEvent} e2 */
             const dragMove = (e2) => {
                 e2.preventDefault();
-                const type=e2.target.dataset.type;
-                if(type === "mover" || type?.includes("resizer")) return;
+
+                if (type === "mover" || type?.includes("resizer") || type === "text") return;
                 Camera.targetX += (e2.clientX - oldX) / Camera.z;
                 Camera.targetY += (e2.clientY - oldY) / Camera.z;
                 oldX = e2.clientX;
@@ -82,9 +82,13 @@ class Camera {
 
         /** @param {MouseEvent} e */
         const handleScroll = (e) => {
-            if(e.target.dataset.type === "text") return;
-            Camera.targetZ += e.deltaY > 0 ? -0.1 : 0.1;
-            Camera.targetZ = Math.max(0.4, Math.min(1, Camera.targetZ));
+            if (e.target.dataset.type === "text") return;
+            if (Math.abs(e.deltaY) > 50)
+                Camera.targetZ += e.deltaY > 0 ? -0.05 : 0.05;
+            else {
+                Camera.targetZ += e.deltaY / 300;
+            }
+            Camera.targetZ = Math.max(0.25, Math.min(1, Camera.targetZ));
 
             Animator.update();
         };

@@ -42,7 +42,7 @@ class Widget {
 
         this.foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
         this.foreignObject.setAttribute('data-id', id);
-        
+
 
         this.p = document.createElement('p');
         this.p.setAttribute('data-type', 'text');
@@ -70,6 +70,7 @@ class Widget {
         this.mover.setAttribute('stroke', '#666666');
         this.mover.setAttribute('stroke-width', '2.5');
         this.mover.setAttribute('fill', 'transparent');
+        this.mover.classList.add("mover")
 
         this.resizer1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         this.resizer1.setAttribute('r', 6);
@@ -77,7 +78,7 @@ class Widget {
         this.resizer1.setAttribute('data-id', id);
         this.resizer1.setAttribute('stroke', '#666666');
         this.resizer1.setAttribute('stroke-width', '2.5');
-        this.resizer1.setAttribute('class', 'dynamicPattern');
+        this.resizer1.setAttribute('class', 'dynamicPattern nwse');
 
         this.resizer2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         this.resizer2.setAttribute('r', 6);
@@ -85,7 +86,7 @@ class Widget {
         this.resizer2.setAttribute('data-id', id);
         this.resizer2.setAttribute('stroke', '#666666');
         this.resizer2.setAttribute('stroke-width', '2.5');
-        this.resizer2.setAttribute('class', 'dynamicPattern');
+        this.resizer2.setAttribute('class', 'dynamicPattern nesw');
 
         this.resizer3 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         this.resizer3.setAttribute('r', 6);
@@ -93,7 +94,7 @@ class Widget {
         this.resizer3.setAttribute('data-id', id);
         this.resizer3.setAttribute('stroke', '#666666');
         this.resizer3.setAttribute('stroke-width', '2.5');
-        this.resizer3.setAttribute('class', 'dynamicPattern');
+        this.resizer3.setAttribute('class', 'dynamicPattern nesw');
 
         this.resizer4 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         this.resizer4.setAttribute('r', 6);
@@ -101,7 +102,7 @@ class Widget {
         this.resizer4.setAttribute('data-id', id);
         this.resizer4.setAttribute('stroke', '#666666');
         this.resizer4.setAttribute('stroke-width', '2.5');
-        this.resizer4.setAttribute('class', 'dynamicPattern');
+        this.resizer4.setAttribute('class', 'dynamicPattern nwse');
 
         this.group2.style.display = "none";
         this.updateTransform();
@@ -133,9 +134,9 @@ class Widget {
         this.cover.setAttribute('y', this.cy0);
 
         this.foreignObject.setAttribute('width', this.x1 - this.x0);
-        this.foreignObject.setAttribute('height', this.y1 - this.y0 );
+        this.foreignObject.setAttribute('height', this.y1 - this.y0);
         this.foreignObject.setAttribute('x', this.x0);
-        this.foreignObject.setAttribute('y', this.y0 );
+        this.foreignObject.setAttribute('y', this.y0);
 
         this.mover.setAttribute('width', this.x1 - this.x0);
         this.mover.setAttribute('height', this.y1 - this.y0);
@@ -171,8 +172,8 @@ class Widget {
         let oldY = e.clientY;
         /** @param {MouseEvent} e2 */
         function onMove(e2) {
-            let deltaX = (e2.clientX - oldX)/Camera.z;
-            let deltaY = (e2.clientY - oldY)/Camera.z;
+            let deltaX = (e2.clientX - oldX) / Camera.z;
+            let deltaY = (e2.clientY - oldY) / Camera.z;
             oldX = e2.clientX;
             oldY = e2.clientY;
             switch (e.target.dataset.type) {
