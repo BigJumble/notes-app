@@ -41,7 +41,7 @@ class Elements {
             }
             Elements.hideOffscreen();
         }, 100);
-
+        
     }
 
     static userSelectID;
