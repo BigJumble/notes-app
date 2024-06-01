@@ -15,42 +15,35 @@ class ContextMenu {
         this.noteContextGroup = document.getElementById("noteContextGroup");
         this.viewBox = this.menuElement.viewBox.baseVal;
         this.recalculateViewBox();
-        window.addEventListener('resize', () => { ContextMenu.recalculateViewBox(); });
-        document.addEventListener("contextmenu", ContextMenu.show);
+
     }
-    static close(e = null) {
-        if (e === null || !ContextMenu.contextWrap.contains(e.target) || e.button !== 0 || e.type === "wheel") {
-            ContextMenu.menuElement.style.display = "none";
-            ContextMenu.selectedElementId = undefined;
-            document.removeEventListener("mousedown", ContextMenu.close);
-            document.removeEventListener("wheel", ContextMenu.close);
-        }
+    static close() {
+        ContextMenu.menuElement.style.display = "none";
+        ContextMenu.selectedElementId = undefined;
+        
     }
+    /** @param {MouseEvent} e */
     static show(e) {
         e.preventDefault();
         if (Elements.contentGroup.contains(e.target)) {
-            ContextMenu.selectedElementId = e.target.dataset.id;
-            ContextMenu.contextGroup.style.display = "none";
-            ContextMenu.noteContextGroup.style.display = "block";
+            this.selectedElementId = e.target.dataset.id;
+            this.contextGroup.style.display = "none";
+            this.noteContextGroup.style.display = "block";
         }
         else {
-
-            ContextMenu.contextGroup.style.display = "block";
-            ContextMenu.noteContextGroup.style.display = "none";
+            this.contextGroup.style.display = "block";
+            this.noteContextGroup.style.display = "none";
         }
-        ContextMenu.viewBox.x = -Camera.cursorX;
-        ContextMenu.viewBox.y = -Camera.cursorY;
-        ContextMenu.menuElement.style.display = "block";
-        document.addEventListener("mousedown", ContextMenu.close);
-        document.addEventListener("wheel", ContextMenu.close);
+        this.viewBox.x = -e.clientX;
+        this.viewBox.y = -e.clientY;
+        this.menuElement.style.display = "block";
 
-        ContextMenu.globalPositionOpened = Camera.screenToGlobalPosition();
+        this.globalPositionOpened = Camera.screenToGlobalPosition();
 
     }
     static recalculateViewBox() {
         this.viewBox.width = window.innerWidth;
         this.viewBox.height = window.innerHeight;
-        Elements.hideOffscreen();
     }
 
     static createNote() {

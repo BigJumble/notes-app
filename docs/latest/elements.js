@@ -31,8 +31,6 @@ class Elements {
 
         this.gridPosition(Camera.x, Camera.y);
 
-        document.addEventListener("mousedown", Elements.userSelectHandler);
-
         setTimeout(() => {
             for (let i = 0; i < 10; i++) {
                 for (let a = 0; a < 10; a++) {
@@ -46,17 +44,16 @@ class Elements {
 
     static userSelectID;
     /** @param {MouseEvent} e */
-    static userSelectHandler(e) {
-        if (!!Elements.userSelectID && (!!e.target.dataset.id || Elements.userSelectID !== e.target.dataset.id)) {
+    static userSelectHandler(e, isText) {
+
+        if (!!this.userSelectID  && !!this.userSelectID !== e.target.dataset.id) {
             window.getSelection().removeAllRanges();
-            Elements.listOfWidgets[Elements.userSelectID].p.style.userSelect = 'none';
-            Elements.userSelectID = undefined;
+            this.listOfWidgets[this.userSelectID].p.style.userSelect = 'none';
+            this.userSelectID = undefined;
         }
-        if (!!e.target.dataset.id) {
-            if (e.target.dataset.type === "text" || e.target.dataset.type === "background") {
-                Elements.userSelectID = e.target.dataset.id;
-                Elements.listOfWidgets[Elements.userSelectID].p.style.userSelect = 'auto';
-            }
+        if (isText) {
+            this.userSelectID = e.target.dataset.id;
+            this.listOfWidgets[this.userSelectID].p.style.userSelect = 'auto';
         }
 
     }
@@ -114,7 +111,8 @@ class Elements {
 
     static moveResize(id) {
         ContextMenu.close();
-        this.listOfWidgets[id].transform();
+        this.listOfWidgets[id].openTransformMenu();
+        ActionManager.controls.selectedWidget = this.listOfWidgets[id];
     }
 
     static themeMode = "dark";

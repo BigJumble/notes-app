@@ -40,9 +40,7 @@ body {
     overflow-y: scroll;
     background-color: transparent;
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
 }
 
 #contextMenu {
