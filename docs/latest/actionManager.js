@@ -13,6 +13,7 @@ class ActionManager {
         background: 1,
         transform: 2,
         text: 3,
+        unknown: 4,
     });
 
     static controls = {
@@ -79,8 +80,11 @@ class ActionManager {
 
             case "background":
             case "content":
-            default:
                 this.controls.selectedElementType = this.elementType.background;
+                break;
+
+            default:
+                this.controls.selectedElementType = this.elementType.unknown;
                 break;
         }
     }
@@ -161,8 +165,8 @@ class ActionManager {
             Elements.userSelectHandler(e, true);
         }
         else { Elements.userSelectHandler(e, false); }
-        if(this.controls.mainMouseDownCtrl) e.preventDefault();
-        
+        if (this.controls.mainMouseDownCtrl) e.preventDefault();
+
 
     }
 
@@ -182,7 +186,6 @@ class ActionManager {
             if (this.controls.selectedElementType === this.elementType.background) {
                 Camera.dragMove(e, delta);
             }
-            console.log(this.controls.selectedElementType === this.elementType.transform,);
             if (this.controls.selectedElementType === this.elementType.transform) {
                 if (!!this.controls.selectedWidget) {
                     this.controls.selectedWidget.onMove(this.controls.widgetTransformType, delta);

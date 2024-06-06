@@ -3,14 +3,14 @@ class ContextMenu {
     static viewBox;
     static contextGroup;
     static noteContextGroup;
-    static contextWrap;
+
     static globalPositionOpened;
 
     static selectedElementId;
 
     static {
         this.menuElement = document.getElementById("contextMenu");
-        this.contextWrap = document.getElementById("contextWrap");
+
         this.contextGroup = document.getElementById("contextGroup");
         this.noteContextGroup = document.getElementById("noteContextGroup");
         this.viewBox = this.menuElement.viewBox.baseVal;
