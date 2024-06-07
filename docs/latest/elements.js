@@ -114,4 +114,43 @@ class Elements {
         this.listOfWidgets[id].openTransformMenu();
         ActionManager.controls.selectedWidget = this.listOfWidgets[id];
     }
+
+    static updateThemeBC(id, color)
+    {
+        ContextMenu.enableTransition(false);
+        this.listOfWidgets[id].themebc = color;
+        this.listOfWidgets[id].rect.style.fill = color;
+
+    }
+    static updateThemeTC(id, color)
+    {
+        ContextMenu.enableTransition(false);
+        this.listOfWidgets[id].themetc = color;
+        this.listOfWidgets[id].p.style.color = color;
+        this.listOfWidgets[id].text.style.color = color;
+    }
+    static themeBC(id)
+    {
+        return this.listOfWidgets[id].themebc;
+    }
+    static themeTC(id)
+    {
+        return this.listOfWidgets[id].themetc;
+    }
+    static isThemedB(id)
+    {
+        return !!this.listOfWidgets[id].themebc;
+    }
+    static isThemedT(id)
+    {
+        return !!this.listOfWidgets[id].themetc;
+    }
+    static resetTheme(id)
+    {
+        this.listOfWidgets[id].themebc = null;
+        this.listOfWidgets[id].themetc = null;
+        this.listOfWidgets[id].rect.style.removeProperty("fill");
+        this.listOfWidgets[id].p.style.removeProperty("color");
+        this.listOfWidgets[id].text.style.removeProperty("color");
+    }
 }

@@ -16,6 +16,10 @@ class Widget {
     }
 
     createNote({ x, y }, id) {
+
+        this.themebc = null;
+        this.themetc = null;;
+
         this.cx0 = Helper.snap(x, 50) - 25;
         this.cx1 = Helper.snap(x, 50) - 25 + 350;
         this.cy0 = Helper.snap(y, 50) - 25;

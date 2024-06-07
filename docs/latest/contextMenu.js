@@ -13,7 +13,6 @@ class ContextMenu {
     static globalPositionOpened;
 
     static selectedElementId;
-
     static {
         this.menuElement = document.getElementById("contextMenu");
         this.baseMenu = document.getElementById("baseMenu");
@@ -32,6 +31,9 @@ class ContextMenu {
         document.getElementById("nbcChanger").addEventListener("colorChange", (e) => { this.customNoteBC = e.detail.color(); this.setCustomTheme(false); });
         document.getElementById("ntcChanger").addEventListener("colorChange", (e) => { this.customNoteTC = e.detail.color(); this.setCustomTheme(false); });
 
+        document.getElementById("noteBcPicker").addEventListener("colorChange", (e) => { Elements.updateThemeBC(this.selectedElementId, e.detail.color()); });
+        document.getElementById("noteTcPicker").addEventListener("colorChange", (e) => { Elements.updateThemeTC(this.selectedElementId, e.detail.color()); });
+
     }
     static close() {
         ContextMenu.menuElement.style.display = "none";
@@ -48,19 +50,21 @@ class ContextMenu {
             this.selectedElementId = e.target.dataset.id;
             this.contextGroup.style.display = "none";
             this.noteContextGroup.style.display = "block";
+
             //theme
-            if (e.target.dataset.themebc) {
-                this.noteBcPicker.setAttribute("fill", e.target.dataset.themebc);
+            if (Elements.isThemedB(this.selectedElementId)) {
+                this.noteBcPicker.setAttribute("fill", Elements.themeBC(this.selectedElementId));
             }
             else {
                 this.noteBcPicker.setAttribute("fill", this.currentNoteBC);
             }
-            if (e.target.dataset.themetc) {
-                this.noteTcPicker.setAttribute("fill", e.target.dataset.themetc);
+            if (Elements.isThemedT(this.selectedElementId)) {
+                this.noteTcPicker.setAttribute("fill", Elements.themeTC(this.selectedElementId));
             }
             else {
                 this.noteTcPicker.setAttribute("fill", this.currentNoteTC);
             }
+
         }
         else {
             this.contextGroup.style.display = "block";
@@ -72,6 +76,13 @@ class ContextMenu {
 
         this.globalPositionOpened = Camera.screenToGlobalPosition();
 
+    }
+    static resetNoteStyle()
+    {
+        this.enableTransition(true);
+        this.noteBcPicker.setAttribute("fill", this.currentNoteBC);
+        this.noteTcPicker.setAttribute("fill", this.currentNoteTC);
+        Elements.resetTheme(this.selectedElementId);
     }
     static recalculateViewBox() {
         this.viewBox.width = window.innerWidth;
