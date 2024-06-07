@@ -206,7 +206,6 @@ class ActionManager {
             Camera.handleScroll(e);
         }
         else {
-            console.log(this.controls.hoverElementType);
             if (this.controls.hoverElementType !== this.elementType.text) {
                 Camera.handleScroll(e);
             }

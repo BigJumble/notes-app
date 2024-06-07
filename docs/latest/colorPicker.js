@@ -4,6 +4,8 @@ class ColorPicker {
     static alphaSelector;
     static mainSelector;
 
+    static colorEditor;
+
     static colorPickerText;
     static text;
 
@@ -18,9 +20,16 @@ class ColorPicker {
     static mainPositionX = 208;
     static mainPositionY = 8;
 
+
+
+    static selectedObject;
+    static selectedAttribute;
+    static colorChangeEvent = new CustomEvent("colorChange", { detail: { color: () => ColorPicker.colorPickerText.value } });
+
     static styleSheet = document.getElementById("dynamicCSS").sheet;
 
     static {
+        this.colorEditor = document.getElementById("colorEditor");
         this.hueSelector = document.getElementById("huePicker");
         this.alphaSelector = document.getElementById("alphaPicker");
         this.mainSelector = document.getElementById("mainPicker");
@@ -96,9 +105,8 @@ class ColorPicker {
         }
     }
 
-    static setColor()
-    {
-        const hue = (this.huePosition - 18) * 2;
+    static setColor() {
+        const hue = (this.huePosition - 18) * 2 % 360;
         const saturation = (this.mainPositionX - 8) / 2;
         const lightness = Math.round(Helper.lerp(100 - (this.mainPositionY - 8) / 1.5, 50 - (this.mainPositionY - 8) / 3, saturation / 100) * 100) / 100;
         const alpha = Math.round((this.alphaPosition - 18) / 1.80) / 100;
@@ -112,13 +120,14 @@ class ColorPicker {
 
 
         // const finalColor = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
-
-        this.colorPickerText.value = this.HSLAToHexa(hue, saturation, lightness, alpha);
+        const hexa = this.HSLAToHexa(hue, saturation, lightness, alpha);
+        this.colorPickerText.value = hexa;
+        this.selectedObject?.setAttribute(this.selectedAttribute, hexa);
+        this.selectedObject?.dispatchEvent(this.colorChangeEvent);
     }
 
     /**https://css-tricks.com/converting-color-spaces-in-javascript/*/
     static nameToHSLA(name) {
-        console.log(name)
         let fakeDiv = document.createElement("div");
         fakeDiv.style.color = name;
         document.body.appendChild(fakeDiv);
@@ -126,9 +135,7 @@ class ColorPicker {
         let cs = window.getComputedStyle(fakeDiv),
             pv = cs.getPropertyValue("color");
 
-
         document.body.removeChild(fakeDiv);
-        console.log(pv);
 
         let rgbaValues = pv.match(/\d+(\.\d+)?/g),
             r = rgbaValues[0] / 255,
@@ -162,20 +169,20 @@ class ColorPicker {
         l = +(l * 100).toFixed(1);
 
 
-        this.HSLAtoPositions(h,s,l,a)
+        this.HSLAtoPositions(h, s, l, a);
         this.setColor();
+        return { h, s, l, a };
     }
 
-    static HSLAtoPositions(h,s,l,a)
-    {
-        this.huePosition = h/2+18;
+    static HSLAtoPositions(h, s, l, a) {
+        this.huePosition = h / 2 + 18;
         this.hueSelector.setAttribute("cx", this.huePosition);
 
-        this.alphaPosition = a*180 + 18;
+        this.alphaPosition = a * 180 + 18;
         this.alphaSelector.setAttribute("cx", this.alphaPosition);
 
         this.mainPositionX = s * 2 + 8;
-        this.mainPositionY = (300*(l-100+0.5*s))/(s-200) + 8;
+        this.mainPositionY = (300 * (l - 100 + 0.5 * s)) / (s - 200) + 8;
 
         this.mainSelector.setAttribute("cx", this.mainPositionX);
         this.mainSelector.setAttribute("cy", this.mainPositionY);
@@ -222,5 +229,13 @@ class ColorPicker {
             a = "0" + a;
 
         return "#" + r + g + b + a;
+    }
+
+    static open(caller, attribute) {
+        this.selectedObject = caller;
+        this.selectedAttribute = attribute;
+        this.colorEditor.style.display = "block";
+        const { h, s, l, a } = this.nameToHSLA(this.selectedObject.getAttribute(attribute));
+        this.colorPickerText.value = this.HSLAToHexa(h, s, l, a);
     }
 }

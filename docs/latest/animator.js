@@ -6,6 +6,11 @@ class Animator {
     static moveSpeed = 20;
     static FPSCounter = 0;
     static {
+
+    }
+    static logFPS()
+    {
+        // in console type: Animator.logFPS();
         setInterval(() => {
             console.log("FPS:", Animator.FPSCounter);
             Animator.FPSCounter = 0;

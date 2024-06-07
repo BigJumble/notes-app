@@ -65,9 +65,7 @@ body {
     left: 0;
 }
 
-.menuIcon {
-    background: white;
-}
+
 
 .menuIcon path {
     transition: fill 0.1s ease, transform 0.05s ease;
@@ -77,10 +75,10 @@ body {
 .menuIcon:hover path {
 
     transition: fill 0.1s ease;
-    fill: rgb(0, 0, 0);
-
-
+    /* fill: inherit; */
+    filter: invert(1);
 }
+
 
 .menuIcon:active path {
 
