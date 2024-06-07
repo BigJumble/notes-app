@@ -128,6 +128,7 @@ class ActionManager {
     // interactions with scene =====================================================
 
     static #handleWindowResize() {
+        
         Camera.recalculateViewBox();
         ContextMenu.recalculateViewBox();
         Elements.hideOffscreen();

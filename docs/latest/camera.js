@@ -21,6 +21,8 @@ class Camera {
     }
 
     static recalculateViewBox() {
+        this.screenSVG.style.width = `${window.innerWidth}px`;
+        this.screenSVG.style.height = `${window.innerHeight}px`;
         this.viewbox.x = -this.x;
         this.viewbox.y = -this.y;
         this.viewbox.width = window.innerWidth / this.z;

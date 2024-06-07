@@ -3,6 +3,8 @@ class ColorPicker {
     static hueSelector;
     static alphaSelector;
     static mainSelector;
+
+    static colorPickerText;
     static text;
 
     static startX = 0;
@@ -10,11 +12,11 @@ class ColorPicker {
     static hueDrag = false;
     static alphaDrag = false;
     static mainDrag = false;
-    static huePosition = 16;
+    static huePosition = 18;
     static alphaPosition = 198;
 
-    static mainPositionX = 206;
-    static mainPositionY = 6;
+    static mainPositionX = 208;
+    static mainPositionY = 8;
 
     static styleSheet = document.getElementById("dynamicCSS").sheet;
 
@@ -22,6 +24,7 @@ class ColorPicker {
         this.hueSelector = document.getElementById("huePicker");
         this.alphaSelector = document.getElementById("alphaPicker");
         this.mainSelector = document.getElementById("mainPicker");
+        this.colorPickerText = document.getElementById("colorPickerText");
 
         this.hueSelector.addEventListener("mousedown", (e) => { this.hueDrag = true; this.startX = e.clientX - this.huePosition; });
         this.alphaSelector.addEventListener("mousedown", (e) => { this.alphaDrag = true; this.startX = e.clientX - this.alphaPosition; });
@@ -29,6 +32,9 @@ class ColorPicker {
 
         document.addEventListener("mouseup", (e) => { this.hueDrag = false; this.alphaDrag = false; this.mainDrag = false; });
         document.addEventListener("mousemove", (e) => { this.mouseMove(e); });
+
+        this.colorPickerText.addEventListener("input", (e) => this.nameToHSLA(e.target.value));
+        this.setColor();
     }
 
     static oldX = 0;
@@ -83,19 +89,36 @@ class ColorPicker {
             this.mainSelector.setAttribute("cy", this.mainPositionY);
 
         }
-        this.styleSheet.cssRules[5].style.stopColor = `hsl(${(this.huePosition - 18) * 2}, 100%, 50%)`;
-        this.styleSheet.cssRules[5].style.fill = `hsl(${(this.huePosition - 18) * 2}, 100%, 50%)`;
-        this.styleSheet.cssRules[6].style.fill = `hsla(${(this.huePosition - 18) * 2}, 100%, 50%, ${(this.alphaPosition - 18) / 180})`;
-        this.styleSheet.cssRules[7].style.fill = `hsl(${(this.huePosition - 18) * 2}, ${(this.mainPositionX-8)/2}%, ${Helper.lerp(100-(this.mainPositionY-8)/1.5,50-(this.mainPositionY-8)/3,(this.mainPositionX-8)/200)}%)`;
-        this.styleSheet.cssRules[7].style.stroke = `hsl(${((this.huePosition - 18) * 2 + 120)%360}, 100%, 50%)`;
 
-        const finalColor = `hsla(${(this.huePosition - 18) * 2}, ${(this.mainPositionX-8)/2}%, ${Helper.lerp(100-(this.mainPositionY-8)/1.5,50-(this.mainPositionY-8)/3,(this.mainPositionX-8)/200)}%, ${(this.alphaPosition - 18) / 180})`;
-        
+        if (this.mainDrag || this.alphaDrag || this.hueDrag) {
+
+            this.setColor();
+        }
+    }
+
+    static setColor()
+    {
+        const hue = (this.huePosition - 18) * 2;
+        const saturation = (this.mainPositionX - 8) / 2;
+        const lightness = Math.round(Helper.lerp(100 - (this.mainPositionY - 8) / 1.5, 50 - (this.mainPositionY - 8) / 3, saturation / 100) * 100) / 100;
+        const alpha = Math.round((this.alphaPosition - 18) / 1.80) / 100;
+
+        this.styleSheet.cssRules[5].style.stopColor = `hsl(${hue}, 100%, 50%)`;
+        this.styleSheet.cssRules[5].style.fill = `hsl(${hue}, 100%, 50%)`;
+        this.styleSheet.cssRules[6].style.fill = `hsla(${hue}, 100%, 50%, ${alpha})`;
+        this.styleSheet.cssRules[7].style.fill = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        this.styleSheet.cssRules[7].style.stroke = `hsl(${(hue + 120) % 360}, 100%, 50%)`;
+
+
+
+        // const finalColor = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+
+        this.colorPickerText.value = this.HSLAToHexa(hue, saturation, lightness, alpha);
     }
 
     /**https://css-tricks.com/converting-color-spaces-in-javascript/*/
     static nameToHSLA(name) {
-
+        console.log(name)
         let fakeDiv = document.createElement("div");
         fakeDiv.style.color = name;
         document.body.appendChild(fakeDiv);
@@ -138,8 +161,66 @@ class ColorPicker {
         s = +(s * 100).toFixed(1);
         l = +(l * 100).toFixed(1);
 
-        return `hsla(${h}, ${s}%, ${l}%, ${a})`;
+
+        this.HSLAtoPositions(h,s,l,a)
+        this.setColor();
     }
 
+    static HSLAtoPositions(h,s,l,a)
+    {
+        this.huePosition = h/2+18;
+        this.hueSelector.setAttribute("cx", this.huePosition);
 
+        this.alphaPosition = a*180 + 18;
+        this.alphaSelector.setAttribute("cx", this.alphaPosition);
+
+        this.mainPositionX = s * 2 + 8;
+        this.mainPositionY = (300*(l-100+0.5*s))/(s-200) + 8;
+
+        this.mainSelector.setAttribute("cx", this.mainPositionX);
+        this.mainSelector.setAttribute("cy", this.mainPositionY);
+    }
+
+    static HSLAToHexa(h, s, l, a) {
+        s /= 100;
+        l /= 100;
+
+        let c = (1 - Math.abs(2 * l - 1)) * s,
+            x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+            m = l - c / 2,
+            r = 0,
+            g = 0,
+            b = 0;
+
+        if (0 <= h && h < 60) {
+            r = c; g = x; b = 0;
+        } else if (60 <= h && h < 120) {
+            r = x; g = c; b = 0;
+        } else if (120 <= h && h < 180) {
+            r = 0; g = c; b = x;
+        } else if (180 <= h && h < 240) {
+            r = 0; g = x; b = c;
+        } else if (240 <= h && h < 300) {
+            r = x; g = 0; b = c;
+        } else if (300 <= h && h < 360) {
+            r = c; g = 0; b = x;
+        }
+        // Having obtained RGB, convert channels to hex
+        r = Math.round((r + m) * 255).toString(16);
+        g = Math.round((g + m) * 255).toString(16);
+        b = Math.round((b + m) * 255).toString(16);
+        a = Math.round(a * 255).toString(16);
+
+        // Prepend 0s, if necessary
+        if (r.length == 1)
+            r = "0" + r;
+        if (g.length == 1)
+            g = "0" + g;
+        if (b.length == 1)
+            b = "0" + b;
+        if (a.length == 1)
+            a = "0" + a;
+
+        return "#" + r + g + b + a;
+    }
 }
