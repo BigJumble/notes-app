@@ -16,13 +16,13 @@ class Camera {
     static {
         this.screenSVG = document.getElementById("screenSVG");
         this.viewbox = this.screenSVG.viewBox.baseVal;
-        this.#onMouseDragEvent();
-        window.addEventListener('resize', () => { Camera.#recalculateViewBox(); });
-        Camera.#recalculateViewBox();
+        this.recalculateViewBox();
         this.screenSVG.style.display = "block";
     }
 
-    static #recalculateViewBox() {
+    static recalculateViewBox() {
+        this.screenSVG.style.width = `${window.innerWidth}px`;
+        this.screenSVG.style.height = `${window.innerHeight}px`;
         this.viewbox.x = -this.x;
         this.viewbox.y = -this.y;
         this.viewbox.width = window.innerWidth / this.z;
@@ -37,65 +37,30 @@ class Camera {
 
     }
 
+    /** @param {MouseEvent} e */
+    static dragMove = (e, { deltaX, deltaY }) => {
+        e.preventDefault();
 
-    static #onMouseDragEvent() {
-        /** @param {MouseEvent} e */
-        const startDrag = (e) => {
-            if (e.button !== 0 && e.button !== 1) return; // left | middle click
+        this.targetX += deltaX / this.z;
+        this.targetY += deltaY / this.z;
 
-            let oldX = e.clientX;
-            let oldY = e.clientY;
-            Camera.isDragging = true;
-            const type = e.button===0? e.target.dataset.type : '';
+        Animator.update();
+    };
 
-            /** @param {MouseEvent} e2 */
-            const dragMove = (e2) => {
-                e2.preventDefault();
 
-                if (type === "mover" || type?.includes("resizer") || type === "text") return;
-                Camera.targetX += (e2.clientX - oldX) / Camera.z;
-                Camera.targetY += (e2.clientY - oldY) / Camera.z;
-                oldX = e2.clientX;
-                oldY = e2.clientY;
 
-                Animator.update();
-            };
+    /** @param {MouseEvent} e */
+    static handleScroll = (e) => {
+        if (Math.abs(e.deltaY) > 50)
+            Camera.targetZ += e.deltaY > 0 ? -0.05 : 0.05;
+        else {
+            Camera.targetZ += e.deltaY / 300;
+        }
+        Camera.targetZ = Math.max(0.25, Math.min(1, Camera.targetZ));
 
-            /** @param {MouseEvent} e2 */
-            const endDrag = (e2) => {
-                e2.preventDefault();
-                Camera.isDragging = false;
-                document.removeEventListener('mousemove', dragMove);
-                document.removeEventListener('mouseup', endDrag);
-            };
+        Animator.update();
+    };
 
-            document.addEventListener('mousemove', dragMove);
-            document.addEventListener('mouseup', endDrag);
-
-        };
-
-        /** @param {MouseEvent} e */
-        const mousePosition = (e) => {
-            Camera.cursorX = e.clientX;
-            Camera.cursorY = e.clientY;
-        };
-
-        /** @param {MouseEvent} e */
-        const handleScroll = (e) => {
-            if (e.target.dataset.type === "text") return;
-            if (Math.abs(e.deltaY) > 50)
-                Camera.targetZ += e.deltaY > 0 ? -0.05 : 0.05;
-            else {
-                Camera.targetZ += e.deltaY / 300;
-            }
-            Camera.targetZ = Math.max(0.25, Math.min(1, Camera.targetZ));
-
-            Animator.update();
-        };
-        document.addEventListener('mousemove', mousePosition);
-        document.addEventListener('wheel', handleScroll);
-        document.addEventListener("mousedown", startDrag);
-    }
 
     /**
      * @param {number} deltaTime last frame time taken.
@@ -117,12 +82,12 @@ class Camera {
             this.z = this.targetZ;
         }
 
-        this.#recalculateViewBox();
+        this.recalculateViewBox();
     }
 
     static #zoomCorrection(oldZ, newZ) {
-        const x = (window.innerWidth / newZ - window.innerWidth / oldZ) * (this.cursorX / window.innerWidth);
-        const y = (window.innerHeight / newZ - window.innerHeight / oldZ) * (this.cursorY / window.innerHeight);
+        const x = (window.innerWidth / newZ - window.innerWidth / oldZ) * (ActionManager.cursorX / window.innerWidth);
+        const y = (window.innerHeight / newZ - window.innerHeight / oldZ) * (ActionManager.cursorY / window.innerHeight);
 
         this.targetX += x;
         this.targetY += y;
@@ -137,9 +102,9 @@ class Camera {
     }
 
 
-    static screenToGlobalPosition(x = Camera.cursorX, y = Camera.cursorY) {
+    static screenToGlobalPosition(x = ActionManager.cursorX, y = ActionManager.cursorY) {
 
-        return { x: x / Camera.z - Camera.x, y: y / Camera.z - Camera.y };
+        return { x: x / this.z - this.x, y: y / this.z - this.y };
     }
     // static globalToScreenPosition(x, y) {
     //     return {x, y}

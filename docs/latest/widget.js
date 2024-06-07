@@ -16,6 +16,10 @@ class Widget {
     }
 
     createNote({ x, y }, id) {
+
+        this.themebc = null;
+        this.themetc = null;;
+
         this.cx0 = Helper.snap(x, 50) - 25;
         this.cx1 = Helper.snap(x, 50) - 25 + 350;
         this.cy0 = Helper.snap(y, 50) - 25;
@@ -45,7 +49,7 @@ class Widget {
 
 
         this.p = document.createElement('p');
-        this.p.setAttribute('data-type', 'text');
+        this.p.setAttribute('data-type', 'p');
         this.p.setAttribute('data-id', id);
         this.p.classList.add("textarea");
         this.p.classList.add("dynamicPattern4");
@@ -53,7 +57,7 @@ class Widget {
         this.p.textContent = "Sample Text Sample Text1 Sample Text Sample Text2 Sample Text Sample Text3 Sample Text Sample Text4 Sample Text Sample Text5";
 
         this.text = document.createElement('textarea');
-        this.text.setAttribute('data-type', 'text');
+        this.text.setAttribute('data-type', 'textarea');
         this.text.setAttribute('data-id', id);
         this.text.setAttribute('placeholder', "Type something...");
         this.text.classList.add("textarea");
@@ -70,7 +74,7 @@ class Widget {
         this.mover.setAttribute('stroke', '#666666');
         this.mover.setAttribute('stroke-width', '2.5');
         this.mover.setAttribute('fill', 'transparent');
-        this.mover.classList.add("mover")
+        this.mover.classList.add("mover");
 
         this.resizer1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         this.resizer1.setAttribute('r', 6);
@@ -156,92 +160,70 @@ class Widget {
         this.resizer4.setAttribute('cy', this.y1);
     }
 
-    transform() {
+    openTransformMenu() {
         this.group2.style.display = "block";
-        const listener = (e) => this.translate(e, listener, this);
-        // this.text.setAttribute("disabled",'');
-        // this.text.setAttribute("draggable",'false');
-        document.addEventListener("mousedown", listener);
+    }
+
+    onMove(type, { deltaX, deltaY }) {
+        deltaX/=Camera.z;
+        deltaY/=Camera.z;
+        switch (type) {
+            case "mover":
+                this.x0 += deltaX;
+                this.x1 += deltaX;
+                this.y0 += deltaY;
+                this.y1 += deltaY;
+                break;
+            case "resizer1":
+                this.x0 += deltaX;
+                if (this.x0 + 100 > this.x1) this.x0 = this.x1 - 100;
+                this.y0 += deltaY;
+                if (this.y0 + 100 > this.y1) this.y0 = this.y1 - 100;
+                break;
+            case "resizer2":
+                this.x1 += deltaX;
+                if (this.x1 < this.x0 + 100) this.x1 = this.x0 + 100;
+                this.y0 += deltaY;
+                if (this.y0 + 100 > this.y1) this.y0 = this.y1 - 100;
+                break;
+            case "resizer4":
+                this.x1 += deltaX;
+                if (this.x1 < this.x0 + 100) this.x1 = this.x0 + 100;
+                this.y1 += deltaY;
+                if (this.y1 < this.y0 + 100) this.y1 = this.y0 + 100;
+                break;
+            case "resizer3":
+                this.x0 += deltaX;
+                if (this.x0 + 100 > this.x1) this.x0 = this.x1 - 100;
+                this.y1 += deltaY;
+                if (this.y1 < this.y0 + 100) this.y1 = this.y0 + 100;
+                break;
+        }
+        this.updateTransform();
 
     }
 
     /** @param {MouseEvent} e */
-    translate(e, listener, me) {
+    snap(e) {
+        this.cover.style.display = "block";
+        this.cx0 = Helper.snapRound(this.x0, 50) - 25;
+        this.cx1 = Helper.snapRound(this.x1, 50) + 25;
+        this.cy0 = Helper.snapRound(this.y0, 50) - 25;
+        this.cy1 = Helper.snapRound(this.y1, 50) + 25;
 
-        let oldX = e.clientX;
-        let oldY = e.clientY;
-        /** @param {MouseEvent} e2 */
-        function onMove(e2) {
-            let deltaX = (e2.clientX - oldX) / Camera.z;
-            let deltaY = (e2.clientY - oldY) / Camera.z;
-            oldX = e2.clientX;
-            oldY = e2.clientY;
-            switch (e.target.dataset.type) {
-                case "mover":
-                    me.x0 += deltaX;
-                    me.x1 += deltaX;
-                    me.y0 += deltaY;
-                    me.y1 += deltaY;
-                    break;
-                case "resizer1":
-                    me.x0 += deltaX;
-                    if (me.x0 + 100 > me.x1) me.x0 = me.x1 - 100;
-                    me.y0 += deltaY;
-                    if (me.y0 + 100 > me.y1) me.y0 = me.y1 - 100;
-                    break;
-                case "resizer2":
-                    me.x1 += deltaX;
-                    if (me.x1 < me.x0 + 100) me.x1 = me.x0 + 100;
-                    me.y0 += deltaY;
-                    if (me.y0 + 100 > me.y1) me.y0 = me.y1 - 100;
-                    break;
-                case "resizer4":
-                    me.x1 += deltaX;
-                    if (me.x1 < me.x0 + 100) me.x1 = me.x0 + 100;
-                    me.y1 += deltaY;
-                    if (me.y1 < me.y0 + 100) me.y1 = me.y0 + 100;
-                    break;
-                case "resizer3":
-                    me.x0 += deltaX;
-                    if (me.x0 + 100 > me.x1) me.x0 = me.x1 - 100;
-                    me.y1 += deltaY;
-                    if (me.y1 < me.y0 + 100) me.y1 = me.y0 + 100;
-                    break;
-            }
-            me.updateTransform();
+        this.x0 = Helper.snapRound(this.x0, 50);
+        this.x1 = Helper.snapRound(this.x1, 50);
+        this.y0 = Helper.snapRound(this.y0, 50);
+        this.y1 = Helper.snapRound(this.y1, 50);
 
-        }
-        /** @param {MouseEvent} e2 */
-        function snap(e2) {
-            me.cover.style.display = "block";
-            me.cx0 = Helper.snapRound(me.x0, 50) - 25;
-            me.cx1 = Helper.snapRound(me.x1, 50) + 25;
-            me.cy0 = Helper.snapRound(me.y0, 50) - 25;
-            me.cy1 = Helper.snapRound(me.y1, 50) + 25;
+        this.updateTransform();
+    }
 
-            me.x0 = Helper.snapRound(me.x0, 50);
-            me.x1 = Helper.snapRound(me.x1, 50);
-            me.y0 = Helper.snapRound(me.y0, 50);
-            me.y1 = Helper.snapRound(me.y1, 50);
-
-            me.updateTransform();
-            document.removeEventListener("mousemove", onMove);
-            document.removeEventListener("mouseup", snap);
-        }
-
-        if (me.group2.contains(e.target)) {
-            me.cover.style.display = "none";
-
-            document.addEventListener("mousemove", onMove);
-            document.addEventListener("mouseup", snap);
-
-        }
-        else {
-            // me.text.removeAttribute("disabled");
-            // me.text.removeAttribute("draggable",'true');
-            me.group2.style.display = "none";
-            document.removeEventListener("mousedown", listener);
-        }
+    transforming(e) {
+        this.cover.style.display = "none"; // hide cover when moving
+    }
+    cancel() {
+        this.group2.style.display = "none"; // hide transform menu
     }
 
     /**

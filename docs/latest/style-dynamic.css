@@ -28,3 +28,14 @@ body {
     color: black;
     transition: fill 0.2s ease-in-out, color 0.2s ease-in-out;
 }
+.pickerColor{
+    stop-color: red;
+    fill: red;
+}
+.pickerAlpha{
+    fill: transparent;
+}
+.pickerMain{
+    fill: red;
+    stroke: blue;
+}
