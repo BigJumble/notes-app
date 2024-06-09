@@ -253,17 +253,17 @@
             </g>
         </g>
 
-        <svg x="-280" width="216" heigth="316" id="colorEditor" style="display: none;">
+        <svg x="-230" width="216" heigth="316" id="colorEditor" style="display: none;">
             <rect x="8" y="8" width="200" height="250" rx="5" fill="#444444" />
             <rect x="8" y="8" width="200" height="150" fill="url(#white-to-color)" shape-rendering="crispEdges" />
-            <rect x="8" y="8" width="200" height="150" fill="url(#black)" shape-rendering="crispEdges" />
+            <rect id="colSelectorBox" x="8" y="8" width="200" height="150" fill="url(#black)" shape-rendering="crispEdges" />
 
             <foreignObject x="18" y="218" width="180" height="25">
                 <input id="colorPickerText" class="txtInput" type="text" value="12345">
             </foreignObject>
 
-            <rect x="18" y="178" width="180" height="5" fill="url(#rainbowGradient)" />
-            <rect x="18" y="198" width="180" height="5" fill="url(#transparency)" />
+            <rect id="hueSelectorBox" x="18" y="178" width="180" height="5" fill="url(#rainbowGradient)" />
+            <rect id="alphaSelectorBox" x="18" y="198" width="180" height="5" fill="url(#transparency)" />
             <circle id="huePicker" class="pickerColor" r="6" cx="18" cy="180.5" stroke="black" stroke-width="2"></circle>
             <circle id="alphaPicker" class="pickerAlpha" r="6" cx="198" cy="200.5" stroke="black" stroke-width="2"></circle>
             <circle id="mainPicker" class="pickerMain" r="6" cx="208" cy="8" stroke-width="2"></circle>
