@@ -1,13 +1,6 @@
 # notes-app
-
-## Setup
-
-- Run `npm i` to install dependencies.
-- Run `npm run start` to start the local server.
-
-## Dependencies
-- https://github.com/mdbassit/Coloris
-
-## Todo
-- [ ] context menu always opens in window
-- [ ] same with color picker
+- Drag screen with left mouse button.
+- Open menu with left click.
+- Edit notes with left click.
+- Zoom or scroll text with mouse wheel.
+- Use CTRL while dragging to ignore notes.
