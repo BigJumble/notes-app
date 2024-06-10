@@ -74,11 +74,18 @@ class ContextMenu {
         this.viewBox.y = -e.clientY;
         this.menuElement.style.display = "block";
 
+        const bbox = this.menuElement.getBBox();
+
+        if (e.clientX + bbox.width > window.innerWidth) {
+            this.viewBox.x += bbox.width;
+        }
+        if (e.clientY + bbox.height > window.innerHeight) {
+            this.viewBox.y += bbox.height;
+        }
         this.globalPositionOpened = Camera.screenToGlobalPosition();
 
     }
-    static resetNoteStyle()
-    {
+    static resetNoteStyle() {
         this.enableTransition(true);
         this.noteBcPicker.setAttribute("fill", this.currentNoteBC);
         this.noteTcPicker.setAttribute("fill", this.currentNoteTC);
@@ -174,7 +181,7 @@ class ContextMenu {
             this.setCustomTheme(true, "#ffffff", "#000000", "#000000", "#ffffff");
         }
     }
-    
+
     static setTheme(_theme) {
         this.theme = _theme;
         if (this.themeMode === "dark") {

@@ -3,6 +3,7 @@ class ColorPicker {
     static hueSelector;
     static alphaSelector;
     static mainSelector;
+    static colSelectorBox;
 
     static colorEditor;
 
@@ -34,9 +35,17 @@ class ColorPicker {
         this.alphaSelector = document.getElementById("alphaPicker");
         this.mainSelector = document.getElementById("mainPicker");
         this.colorPickerText = document.getElementById("colorPickerText");
+        this.colSelectorBox = document.getElementById("colSelectorBox");
+        this.hueSelectorBox = document.getElementById("hueSelectorBox");
+        this.alphaSelectorBox = document.getElementById("alphaSelectorBox");
 
         this.hueSelector.addEventListener("mousedown", (e) => { this.hueDrag = true; this.startX = e.clientX - this.huePosition; });
         this.alphaSelector.addEventListener("mousedown", (e) => { this.alphaDrag = true; this.startX = e.clientX - this.alphaPosition; });
+
+        this.colSelectorBox.addEventListener("mousedown", (e) => { this.mainDrag = true; this.boxClick(e); });
+        this.hueSelectorBox.addEventListener("mousedown", (e) => { this.hueDrag = true; this.boxClick(e); });
+        this.alphaSelectorBox.addEventListener("mousedown", (e) => { this.alphaDrag = true; this.boxClick(e); });
+
         this.mainSelector.addEventListener("mousedown", (e) => { this.mainDrag = true; this.startX = e.clientX - this.mainPositionX; this.startY = e.clientY - this.mainPositionY; });
 
         document.addEventListener("mouseup", (e) => { this.hueDrag = false; this.alphaDrag = false; this.mainDrag = false; });
@@ -103,6 +112,13 @@ class ColorPicker {
 
             this.setColor();
         }
+    }
+    /** @param {MouseEvent} e */
+    static boxClick(e) {
+        const coords = this.colorEditor.getBoundingClientRect();
+        this.startX = coords.x;
+        this.startY = coords.y;
+        this.mouseMove(e);
     }
 
     static setColor() {
@@ -235,6 +251,13 @@ class ColorPicker {
         this.selectedObject = caller;
         this.selectedAttribute = attribute;
         this.colorEditor.style.display = "block";
+
+        if (-ContextMenu.viewBox.x - 230 < 0) {
+            this.colorEditor.setAttribute("x", 230 - 16);
+        }
+        else {
+            this.colorEditor.setAttribute("x", -230);
+        }
         const { h, s, l, a } = this.nameToHSLA(this.selectedObject.getAttribute(attribute));
         this.colorPickerText.value = this.HSLAToHexa(h, s, l, a);
     }
